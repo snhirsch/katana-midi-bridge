@@ -91,7 +91,7 @@ settings, then send a shorter burst of sysex commands to setup the
 front panel.  This entire operation runs in about 50 msec. with
 only negligible impact on sound.
 
-# Overview of Installation
+# High-Level Overview of Installation
 
 (See Wiki for step-by-step instructions)
   
@@ -109,8 +109,6 @@ only negligible impact on sound.
     - python3
     - python3-dev
     - python3-pip
-    - pyusb
-    - mido
 
   + Then, use 'pip3' to install a couple of Python native modules:
 ```
@@ -125,7 +123,11 @@ Would appreciate feedback on requirements for other distributions.
   1. Update ```60-controller.rules``` with the USB VID (vendor id) and PID
 (product id) of your controller.  This edit affects (2) lines.
 
-  2. Edit ```katana_bridge_start``` to set values marked as user
+  2. Update ```50-katan.rules``` with the USB VID (vendor id) and PID
+(product id) of your amp.  This requirement will go away once I learn the 
+USB product ids for all Katana models
+
+  3. Edit ```katana_bridge_start``` to set values marked as user
 edits.  In addition to setting the USB vender and device id, you need
 to specify which MIDI channel to listen on and provide a couple of
 strings to help the program find the MIDI interface.
@@ -168,9 +170,8 @@ possible with other floor controllers.
 ## In case of difficulty
 
 RPi and BBG are a bit fussy about enumeration of new USB devices. If
-you are not getting proper communication, quit the program and try
-replugging both the amp and MIDI controller **after** those devices
-are powered up.
+you are not getting proper communication, try replugging both the amp
+and MIDI controller **after** those devices are powered up.
 
 I've had success using a passive USB hub with the single USB on the
 BBG, but YMMV since most USB<->5Pin MIDI converters draw some degree
