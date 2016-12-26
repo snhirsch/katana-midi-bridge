@@ -1,0 +1,4 @@
+# Cover all known Katana models
+ACTION=="add|change", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="0582", ATTRS{idProduct}=="01d8", GROUP="plugdev", RUN+="/bin/bash -c '/bin/echo /usr/local/bin/katana_bridge_start | /usr/bin/at now'"
+ACTION=="remove", ENV{ID_VENDOR_ID}=="0582", ENV{ID_MODEL_ID}=="01d8", ENV{DEVTYPE}=="usb_device", RUN+="/usr/local/bin/katana_bridge_stop"
+

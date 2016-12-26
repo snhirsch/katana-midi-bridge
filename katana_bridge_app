@@ -1,0 +1,165 @@
+#!/usr/bin/python3
+# -*-python-*-
+
+import sys
+import os
+import mido
+import time
+
+from panel_preset import PanelPreset
+from katana import Katana
+
+mido.set_backend('mido.backends.rtmidi')
+
+preset_file = None
+presets = dict()
+
+# NOTE: (3) CC#3 w/ value > 63 within a 2 second window arms
+#       us for preset capture.  If the next message received is PC 
+#       for value > 10 we capture the current amp state into that 
+#       dictionary slot and persist the entire preset memory to
+#       disk file.
+
+# State-machine for detection of preset capture command
+class Trigger:
+    def __init__( self ):
+        self.armed = False
+        self.starttime = 0
+        self.count = 0
+
+    def clear( self ):
+        self.armed = False
+
+    def is_armed( self ):
+        return self.armed
+
+    def detect( self, value ):
+        now = time.time()
+        if value > 63:
+            self.armed = False
+            if self.count == 0 or now - self.starttime > 2:
+                # State-machine init.  One of these applies:
+                #
+                # - We were armed, but didn't follow up with a PC
+                # - First time we've seen the signal since starting
+                # - First time we've seen the signal since previous arming
+                # - Too much time elapsed since the last signal
+                self.count = 1
+                self.starttime = now
+            else:
+                # Within time window, increment counter
+                self.count += 1
+
+        if self.count == 3:
+            self.count = 0
+            self.armed = True
+
+
+def load_presets( presets ):
+    if os.path.isfile( preset_file ):
+        # Read all presets
+        with open(preset_file,'r') as fh:
+            for rec in PanelPreset.get_from_file( fh ):
+                presets[rec.id] = rec
+
+# Rename existing data file and persist current
+# live data to disk
+def save_presets():
+    try:
+        if os.path.isfile( preset_file ):
+            os.rename( preset_file, preset_file + ".bak" )
+
+        with open(preset_file,'w') as outfh:
+            for rec in presets.values():
+                rec.serialize( outfh )
+    except OSError:
+        print( "Error: " + OSError )
+        sys.exit( 1 )
+
+# Capture and persist a new preset (overwrites existing)
+def capture_preset( katana, program ):
+    # Read amp into rec using controller PC program value as id
+    rec = PanelPreset.read_from_amp( katana, program )
+    presets[ rec.id ] = rec
+    # Persist to disk
+    save_presets()
+    # Cycle LEDs for confirmation signal
+    katana.signal()
+
+# Handle our presets
+def handle_pc( trigger, katana, program ):
+    if program > 10:
+        if trigger.is_armed():
+            trigger.clear()
+            capture_preset( katana, program )
+        elif program in presets:
+            rec = presets[ program ]
+            rec.transmit( katana )
+
+    # Disarm at exit whether or not we did anything
+    trigger.clear()
+
+def handle_cc( trigger, katana, control, value ):
+    if control == 3:
+        trigger.detect( value )
+    else:
+        trigger.clear()
+        # All our CC --> sysex mappings here
+        if control == 70:
+            katana.volume( value )
+
+
+
+################################ (main) ##################################
+
+args = sys.argv
+if len(args) < 6:
+    print( "Usage: bridge.py <controller_port> <listen_channel> <amplifier_port> <amp_channel> <preset_file> [virt]\n" )
+    print( "       Ex:\n" )
+    print( "          bridge.py \"USB MS1x1 MIDI Interface:USB MS1x1 MIDI Interface MIDI 1 24:0\" 2 \\" )
+    print( "            \"KATANA:KATANA MIDI 1 20:0\" 1 presetfile.txt\n" )
+    sys.exit( 1 )
+
+interface = args[1]
+
+try:
+    listen_ch = int( args[2] ) - 1
+except ValueError:
+    print( "Arg2 must be numeric!\n" )
+    sys.exit( 1 )
+
+amp = args[3]
+
+try:
+    amp_channel = int( args[4] ) - 1
+except ValueError:
+    print( "Arg4 must be numeric!\n" )
+    sys.exit( 1 )
+
+preset_file = args[5]
+
+if len(args) == 7 and args[6] == 'virt':
+    virt = True
+else:
+    virt = False
+
+load_presets( presets )
+
+katana = Katana( amp, amp_channel, clear_input=True )
+trigger = Trigger()
+
+# Main processing loop
+with mido.open_input(interface, virtual=virt) as commands:
+    for msg in commands:
+        if msg.channel == listen_ch:
+            if msg.type == 'control_change':
+                if msg.control >= 16 and msg.control <= 18:
+                    katana.send_cc( msg.control, msg.value )
+                else:
+                    handle_cc( trigger, katana, msg.control, msg.value )
+            elif msg.type == 'program_change':
+                if msg.program >= 0 and msg.program <= 4:
+                    katana.send_pc( msg.program )
+                else:
+                    handle_pc( trigger, katana, msg.program )
+

@@ -1,0 +1,35 @@
+#!/usr/bin/python3
+# -*-python-*-
+
+import os
+from glob import glob
+from syslog import syslog
+import signal
+
+pid = os.getpid()
+# syslog( "%d: Starting" % pid )
+
+rundir = "/var/run/katana/"
+
+# Check for pid file
+os.chdir( rundir )
+filelist = glob( 'katana_*' )
+
+if len( filelist ) == 1:
+    lockfile = filelist[0]
+    oldpid = lockfile.split( '_' )[1]
+
+    # See if the process still exists
+    # syslog( "%d: Check for path /proc/%s" % (pid, oldpid) )
+    if os.path.exists( "/proc/%s" % oldpid ):
+        # syslog( "%d: Sending sigint to pid %s" % (pid, oldpid) )
+        try:
+            os.kill( int(oldpid), signal.SIGINT ) 
+        except Exception:
+            syslog( "%d: Signal failed: %s" % (pid, Exception) )
+            pass
+        else:
+            # syslog( "%d: Signal sent" % pid )
+            pass
+else:
+    syslog( "%d: /var/run/katana is not properly setup" % pid )

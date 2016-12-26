@@ -1,0 +1,124 @@
+#!/usr/bin/python3
+# -*-python-*-
+
+import os
+from os.path import expanduser
+from pwd import getpwnam
+from grp import getgrnam
+
+import glob
+import syslog
+# from string import split
+import mido
+
+import usb.core
+
+mido.set_backend( 'mido.backends.rtmidi' )
+
+rundir = "/var/run/katana/"
+
+####### Start User Edits #########
+
+# Controller USB parms (iConnectivity)
+control_vid = 0x2321
+control_pid = 0x0005
+
+# Controller MIDI device
+control_midi_tokens = ( 'mio2', 'MIDI 2' )
+
+# MIDI listen channel
+control_midi_channel = 2
+
+# Katana USB parms - NOTE: Leave the '0x0000' entry as-is!
+katana_vid = 0x0582
+katana_pids = ( 0x01d8, 0x0000 )
+
+katana_midi_tokens = ( 'KATANA', 'MIDI 1' )
+katana_midi_channel = 1
+
+######## End User Edits ##########
+
+def find_midi_devices():
+    control_midi_device = None
+    for name in mido.get_input_names():
+        if control_midi_tokens[0] in name and control_midi_tokens[1] in name:
+            control_midi_device = name
+            break
+
+    if control_midi_device == None:
+        syslog.syslog( "%d: Cannot find controller MIDI device" % pid )
+
+    katana_midi_device = None
+    for name in mido.get_output_names():
+        if katana_midi_tokens[0] in name and katana_midi_tokens[1] in name:
+            katana_midi_device = name
+            break
+
+    if katana_midi_device == None:
+        syslog.syslog( "%d: Cannot find Katana MIDI device" % pid )
+
+    return control_midi_device, katana_midi_device
+
+
+# Look for devices
+controller = usb.core.find( idVendor = control_vid, idProduct = control_pid )
+if ( not controller ):
+    sys.exit( 0 )
+
+katana = False
+for pid in katana_pids:
+    device = usb.core.find( idVendor = katana_vid, idProduct = pid )
+    if ( device ):
+        katana = True
+        break
+
+if ( not katana ):
+    sys.exit( 0 )
+
+pid = os.getpid()
+# syslog.syslog( "%d: Starting" % pid )
+
+control_midi_device, katana_midi_device = find_midi_devices()
+
+# Look for atomic pid file
+os.chdir( rundir )
+filelist = glob.glob( 'katana_*' )
+if len( filelist ) != 1:
+    syslog.syslog( "%d: /var/run/katana is not properly setup" % pid )
+    sys.exit( 0 )
+
+# Found file.  Parse out the PID of the process that created it.
+lockfile = filelist[0]
+oldpid = lockfile.split( '_' )[1]
+
+# syslog.syslog( "%d: Check for path /proc/%s" % (pid, oldpid) )
+if not os.path.exists( "/proc/%s" % oldpid ):
+    # No such process, ok to start ours
+    # syslog.syslog( "%d: Renaming %s to katana_%d" % (pid, lockfile, pid) )
+    try:
+        os.rename( lockfile, "katana_%d" % os.getpid() ) 
+    except Exception:
+        pass
+        # syslog.syslog( "%d: Unable to rename file" % pid )
+    else:
+        # syslog.syslog( "%d: About to exec" % pid )
+        # Drop privileges and start the program
+        pwObj = getpwnam('katana-user')
+        os.setgid( pwObj.pw_gid )
+        
+        # Need secondary groups to access MIDI and USB devices
+        sec_gids = ( getgrnam('plugdev').gr_gid, getgrnam('audio').gr_gid )
+        os.setgroups( sec_gids )
+
+        os.setuid( pwObj.pw_uid )
+
+        # Set path for support modules
+        os.environ['PYTHONPATH'] = "/usr/local/share/katana"
+
+        # Run in katana-user's home directory so we can write preset file.
+        os.chdir( "/home/katana-user" )
+
+        os.execl( "/usr/local/bin/katana_bridge_app", "katana_bridge", 
+                  "%s" % control_midi_device, "%s" % control_midi_channel,
+                  "%s" % katana_midi_device, "%s" % katana_midi_channel,
+                  "preset.data" )
