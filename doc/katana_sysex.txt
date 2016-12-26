@@ -1,0 +1,1422 @@
+Boss Katana 100 Combo 
+MIDI System-Exclusive (sysex) Specification
+Reverse Engineered by Steven Hirsch
+
+v1.5 - 2016-12-20
+
+==
+
+1. All Boss sysex messages start with a prefix of:
+
+F0 41 00 00 00 00 33
+   |  |  ----------- Model ID
+   |  |__ Device ID
+   |
+   |_____ Mfr ID = Roland
+
+2. Operation Type
+
+11 - Query parameters
+12 - Set parameters
+
+Note:  So, all query sysex messages begin with this prefix:
+
+       F0 41 00 00 00 00 33 11
+
+       and all data setting messages begin with:
+
+       F0 41 00 00 00 00 33 12
+
+==
+
+3. Parameter Address    
+
+                        xx xx xx xx (4 bytes)
+
+==
+
+4a. If operation is query, next is max offset + 1
+
+    Note: This is a range limit and not necessarily the byte
+          count. The device can and will skip areas where no parms are
+          defined and thus may return fewer bytes than expected.
+
+                        yy yy yy yy (4 bytes)
+
+4b. If operation is set, next N bytes are data.
+
+                        aa bb cc .. zz
+
+==
+
+5. Next to last byte is checksum        CC
+
+   (See below for algorithm)
+
+==
+
+6. Last is always sysex terminator:  F7 
+
+==
+
+All of the parameters documented below are in the form:
+
+xx xx xx xx --> yy (,zz..)
+-----------     ----------
+   |                |
+   |___ Address     |___ Data (Most, but not all, are single byte)
+
+** Prefix, checksum and Terminator are never shown. **
+
+
+[Checksum Algorithm]
+
+Let's say our message is:
+
+F0 41 00 00 00 00 33 12 60 00 12 14 01 79 F7
+
+(command to set Katana Reverb type 'red').  Here's how that final
+'0x79' was derived (in Python syntax):
+
+# Take the address (4 bytes) and data (1 byte) portion:
+vals = [0x60, 0x00, 0x12, 0x14, 0x01]
+
+# Sum with 7-bit wraparound
+accum = 0
+for val in vals:
+    accum = (accum + val) & 0x7F
+
+# Checksum is lower 7 bits of the difference w/ 128
+cksum = (128 - accum) & 0x7F
+
+
+-------
+
+Parameter Blocks (Work in Progress)
+
+Panel (Maybe.  Has EFX but not amp data)
+10 00 xx xx
+Ch1
+10 01 xx xx
+Ch2
+10 02 xx xx
+Ch3
+10 03 xx xx
+Ch4
+10 04 xx xx
+
+Effective Block
+60 00 xx xx
+
+
+***************************
+******** System ***********
+***************************
+
+Set MIDI Channel (1..16)
+00 02 00 00 --> 00 .. 0F
+
+[USB]
+
+To Effect Level (-20..0..20)
+00 00 00 51 --> 00 .. 14 .. 28
+
+Effect Out Level (0..100)
+00 00 00 52 --> 00 .. 32
+
+Mix Level (0..100)
+00 00 00 53 --> 00 .. 32
+
+Loop Back (Off, On)
+00 00 00 56 --> 00, 01
+
+Dry Out Level (0..100)
+00 00 00 57 --> 00 .. 32
+
+
+[Preset Save]
+
+Place in BTS control mode
+7F 00 00 01 --> 01
+
+Send name of amp first:
+60 00 00 00 --> 4B 41 54 41 4E 41 20 20 20 20 20 20 20 20 20 20
+
+Save current state in preset:
+7F 00 01 04 --> 00 xx
+
+ Ch1:   01
+ Ch2:   02
+ Ch3:   03
+ Ch4:   04
+
+Exit BTS control mode
+7F 00 00 01 --> 00
+
+
+[Preset Recall]
+
+Place in BTS control mode
+7F 00 00 01 --> 01
+
+Recall
+00 01 00 00 --> 00 xx
+
+ Panel: 00
+ Ch1:   01
+ Ch2:   02 
+ Ch3:   03 
+ Ch4:   04 
+
+Exit BTS control mode
+7F 00 00 01 --> 00
+
+Note: Probably much simpler to use PC# 0-5
+
+
+[Determine Current Preset]
+
+Place in BTS control mode
+7F 00 00 01 --> 01
+
+   *QUERY* 
+   Address: 00 01 00 00   Length: 00 00 00 02
+
+   *RESPONSE DATA*  
+   00 xx
+
+     Panel: 00
+     Ch1:   01
+     Ch2:   02
+     Ch3:   03
+     Ch4:   04
+
+Exit BTS control mode
+7F 00 00 01 --> 00
+
+
+**************************
+**** Amplifier Common ****
+**************************
+
+General Note:
+
+When taking a snapshot of the amp panel state, capture this entire
+block:
+ 
+  address = 00 00 04 00   count = 00 00 00 2A
+
+Restoring the block appears to be a valid way to create virtual
+presets.
+
+
+[Send/Return]
+
+Loop Active (Off, On)
+00 00 04 00 --> 00, 01
+
+Note1: Loop-active commands effective only when a 1/4" plug is
+inserted in Return jack. Inserting the jack forces loop to 
+the active state.
+
+Note2: CC# 19 performs the same function.
+
+Routing Scheme (Series, Parallel)
+00 00 04 01 --> 00, 01
+
+Send Level (0..Unity..200)
+00 00 04 02 --> 00 .. 32 .. 64
+
+Return Level (0..Unity..200)
+00 00 04 03 --> 00 .. 32 .. 64
+
+
+[Unknown Addresses] INFORMATIONAL ONLY
+
+Note: When a button-press event is triggered in editor mode,
+      the amp response conditions a pair of addresses in the
+      00 00 04 xx block.
+
+      These messages do not seem necessary to select a color
+      but are documented here for informational purposes.
+
+00 00 04 10 --> cc    Boost/Mod Color
+00 00 04 11 --> cc    Delay/FX Color
+00 00 04 12 --> cc    Reverb Color
+
+  Values:
+
+  Green:  01
+  Red:    02
+  Yellow: 03
+
+00 00 04 13 --> cr    Boost/Mod Color + Range
+00 00 04 14 --> cr    Delay/FX Color + Range
+00 00 04 15 --> cr    Reverb Color + Range
+
+  Values:
+
+  Green A:  01
+  Red A:    02
+  Yellow A: 03
+  Green B:  04 (n/a for Reverb)
+  Red B:    05   ""
+  Yellow B: 06   ""
+
+Amp Type
+00 00 04 20 --> xx
+
+ Acoustic: 00 
+ Clean:    01 
+ Crunch:   02
+ Lead:     03
+ Brown:    04
+
+
+[Front Panel]
+
+Gain (0..100)
+00 00 04 21 --> 00 .. 64
+
+Volume (0..100)
+00 00 04 22 --> 00 .. 64
+
+Bass (0..100)
+00 00 04 23 --> 00 .. 64 
+
+Mid (0..100)
+00 00 04 24 --> 00 .. 64
+
+Treble (0..100)
+00 00 04 25 --> 00 .. 64
+
+Presence (0..100)
+00 00 04 26 --> 00 .. 64
+
+Booster/Mod 
+00 00 04 27 --> xx
+
+   Values (Off, 0..50)
+
+   Booster: 00, 01 .. 33
+   Mod:     34, 35 .. 67
+
+Delay/FX
+00 00 04 28 --> xx
+
+   Values (Off, 0..50)
+
+   Delay: 00, 01 .. 33
+   Mod:   34, 35 .. 67
+
+Reverb (Off, 0..100)
+00 00 04 29 --> 00, 01 .. 65
+
+---
+
+Chain
+
+Note: Send choice first
+
+60 00 12 00 --> xx
+
+ One:   00
+ Two:   01
+ Three: 02
+
+Note: Send activation Message (not clear if this is really required)
+
+60 00 07 20 --> 00 00 00 14 
+
+---
+
+Noise Gate (Off,On)
+
+60 00 06 63 --> 00, 01
+
+Threshold (0..100)
+60 00 06 64 --> 00 .. 64
+
+Release (0..100)
+60 00 06 65 --> 00 .. 64
+
+
+*************************
+****** Boost/Mod ********
+*************************
+
+===== Boost ======
+
+A-Range Toggle (Off, On)
+60 00 00 30 --> 00, 01
+
+Note: You must know which of Boost or Mod is active to use sysex
+      for this.  Probably simpler to use CC# 16, since that will
+      toggle whatever is effective at the time.
+
+Select for Edit
+60 00 00 31 --> xx
+
+  See Boost color assign for values
+
+[Parameters]
+
+Drive (0..100)
+60 00 00 32 --> 00 .. 64
+
+Bottom (-50,0,50)
+60 00 00 33 --> 00 .. 32 .. 64
+
+Tone (-50,0,50)
+60 00 00 34 --> 00 .. 32 .. 64
+
+Solo Switch (off,on)
+60 00 00 35 --> 00, 01
+
+Solo Level (0..100)
+60 00 00 36 --> 00 .. 64
+
+Effect Level (0..100)
+60 00 00 37 --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 00 38 --> 00 .. 64
+
+======= Mod =======
+
+B-Range Toggle (Off, On)
+60 00 01 40 --> 00, 01
+
+Note: You must know which of Boost or Mod is active to use sysex
+      for this.  Probably simpler to use CC# 16, since that will
+      toggle whatever is effective at the time.
+
+(See effect_common)
+
+
+*************************
+******* Delay/FX ********
+*************************
+
+====== Delay =======
+
+A-Range Toggle (Off, On)
+60 00 05 60 --> 00, 01
+
+Note: You must know which of Delay or FX is active to use sysex
+      for this.  Probably simpler to use CC# 17, since that will
+      toggle whatever is effective at the time.
+
+Select for Edit
+60 00 05 61 --> xx
+
+  See Delay button assign for values
+
+[Parameters]
+
+Note: Tap Tempo equivalent to setting delay time, but it
+      averages time between button presses.
+
+Delay Time (1,..,2000ms)
+60 00 05 62 --> 00 01 .. 0F 50
+
+Note1: hhll is an 11-bit value representing ms intervals between taps
+       (Max 2000). Because sysex data is limited to 7 bits, encoding
+       is:
+
+       hh                            ll
+       0 0 0 0 b10 b9 b8 b7    0 b6 b5 b4 b3 b2 b1 b0
+
+       So, the maximum value would be 0F 50, or
+
+       0 0 0 0 1 1 1 1     0 1 0 1 0 0 0 0
+
+Feedback (0..100)
+60 00 05 64 --> 00 .. 64
+
+High Cut (630Hz,..,12.5kHz, Flat)
+60 00 05 65 --> 00 .. 0D, 0E
+
+Effect Level (0..120)
+60 00 05 66 --> 00 .. 78
+
+Direct Mix (0..100)
+60 00 05 67 --> 00 .. 64
+
+======== FX ==========
+
+B-Range Toggle (Off, On)
+60 00 03 4C --> 00, 01
+
+Note: You must know which of Delay or FX is active to use sysex
+      for this.  Probably simpler to use CC# 17, since that will
+      toggle whatever is effective at the time.
+
+(See effect_common)
+
+
+***********************************
+********** Built-in EFX ***********
+** Can be in Mod and/or EFX slot **
+***********************************
+
+[Select for Edit]
+60 00 03 4D --> xx
+
+  See Mod/FX button assign for values
+
+[Parameters]
+
+==> T Wah
+
+Mode (LPF,HPF)
+60 00 03 58 --> 00, 01
+
+Polarity (Down,Up)
+60 00 03 59 --> 00, 01
+
+Sens (0..100)
+60 00 03 5A --> 00 .. 64
+
+Freq (0..100)
+60 00 03 5B --> 00 .. 64
+
+Peak (0..100)
+60 00 03 5C --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 03 5D --> 00 .. 64
+
+Effect Level (0..100)
+60 00 03 5E --> 00 .. 64
+
+==> Auto Wah
+
+Mode (LPF,HPF)
+60 00 03 60 --> 00, 01
+
+Freq (0..100)
+60 00 03 61 --> 00 .. 64
+
+Peak (0..100)
+60 00 03 62 --> 00 .. 64
+
+Rate (0..100)
+60 00 03 63 --> 00 .. 64
+
+Depth (0..100)
+60 00 03 64 --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 03 65 --> 00 .. 64
+
+Effect Level (0..100)
+60 00 03 66 --> 00 .. 64
+
+==> Pedal Wah
+
+60 00 03 68 --> yy
+
+  Cry Wah:     00
+  Vox Wah:     01
+  Fat Wah:     02
+  Light Wah:   03
+  7String Wah: 04
+  Reso Wah:    05
+
+Pedal Pos (0..100)
+60 00 03 69 --> 00 .. 64
+
+Pedal Min (0..100)
+60 00 03 6A --> 00 .. 64
+
+Pedal Max (0..100)
+60 00 03 6B --> 00 .. 64
+
+Effect Level (0..100)
+60 00 03 6C --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 03 6D --> 00 .. 64
+
+==> Comp
+
+60 00 03 6F --> yy
+
+  Boss Comp: 00
+  Hi-Band:   01
+  Light:     02
+  D-Comp:    03
+  Orange:    04
+  Fat:       05
+  Mild:      06
+
+Sustain (0..100)
+60 00 03 70 --> 00 .. 64
+
+Attack (0..100)
+60 00 03 71 --> 00 .. 64
+
+Tone (-50..0..50)
+60 00 03 72 --> 00 .. 32 .. 64
+
+Level (0..100)
+60 00 03 73 --> 00 .. 64
+
+==> Limiter
+
+60 00 03 75 --> yy
+
+ Boss Limiter: 00
+ Rack 160D:    01
+ VTG Rack U:   02
+
+Attack (0..100)
+60 00 03 76 --> 00 .. 64
+
+Threshold (0..100)
+60 00 03 77 --> 00 .. 64
+
+Ratio (1:1 .. Inf:1)
+60 00 03 78 --> 00 .. 11
+
+Release (0..100)
+60 00 03 79 --> 00 .. 64
+
+Level (0..100)
+60 00 03 7A --> 00 .. 64
+
+==> Graphic EQ
+
+Note: Values are -20, 0, 20
+
+31Hz
+60 00 03 7C --> 00, 14, 28
+
+62Hz
+60 00 03 7D --> 00, 14, 28
+
+125Hz
+60 00 03 7E --> 00, 14, 28
+
+250Hz
+60 00 03 7F --> 00, 14, 28
+
+500Hz
+60 00 04 00 --> 00, 14, 28
+
+1kHz
+60 00 04 01 --> 00, 14, 28
+
+2kHz
+60 00 04 02 --> 00, 14, 28
+
+4kHz
+60 00 04 03 --> 00, 14, 28
+
+8kHz
+60 00 04 04 --> 00, 14, 28
+
+16kHz
+60 00 04 05 --> 00, 14, 28
+
+Level
+60 00 04 06 --> 00, 14, 28
+
+==> Parametric EQ
+
+Low Gain (-20, 0, 20)
+60 00 04 09 --> 00, 14, 28
+
+Low-Mid Freq (20Hz - 10kHz)
+60 00 04 0A --> 00 .. 1B
+
+Low-Mid Q (0.5 - 16)
+60 00 04 0B --> 00 .. 05
+
+Low-Mid Gain (-20, 0, 20)
+60 00 04 0C --> 00, 14, 28
+
+High-Mid Freq (20Hz - 10kHz)
+60 00 04 0D --> 00 .. 1B
+
+High-Mid Q (0.5 - 16)
+60 00 04 0E --> 00 .. 05
+
+High-Mid Gain (-20, 0, 20)
+60 00 04 0F --> 00, 14, 28
+
+High Gain (-20, 0, 20)
+60 00 04 10 --> 00, 14, 28
+
+Level (-20, 0, 20)
+60 00 04 12 --> 00, 14, 28 
+
+==> Guitar Sim
+
+60 00 04 1A --> yy
+
+  S->H:      00
+  H->S:      01
+  H->HF:     02
+  S->Hollow: 03
+  H->Hollow: 04
+  S->AC:     05
+  H->AC:     06
+  P->AC:     07
+
+Note: S->H and H->S do not have 'Body'
+
+Low (-50..0..50)
+60 00 04 1B --> 00 .. 32 .. 64
+
+High (-50..0..50)
+60 00 04 1C --> 00 .. 32 .. 64
+
+Level (0..100)
+60 00 04 1D --> 00 .. 64
+
+Body (0..100)
+60 00 04 1E --> 00 .. 64
+
+==> Slow Gear
+
+Sens (0..100)
+60 00 04 20 --> 00 .. 64
+
+Rise Time (0..100)
+60 00 04 21 --> 00 .. 64
+
+Level (0..100)
+60 00 04 22 --> 00 .. 64
+
+==> Wave Synth
+
+60 00 04 2C --> yy
+
+    Saw:    00
+    Square: 01
+
+Cutoff (0..100)
+60 00 04 2D --> 00 .. 64
+
+Resonance (0..100)
+60 00 04 2E --> 00 .. 64
+
+Filter Sens (0..100)
+60 00 04 2F --> 00 .. 64
+
+Filter Decay (0..100)
+60 00 04 30 --> 00 .. 64
+
+Filter Depth (0..100)
+60 00 04 31 --> 00 .. 64
+
+Synth Level (0..100)
+60 00 04 32 --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 04 33 --> 00 .. 64
+
+==> Octave
+
+Range (1..4)
+60 00 04 3D --> 00 .. 03
+
+Effect Level (0..100)
+60 00 04 3E --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 04 3F --> 00 .. 64
+
+==> Pitch Shifter
+
+60 00 04 41 --> yy
+
+  1 Voice: 00
+  2 Voice: 01
+
+Note: PS2 on 2Voice Only
+
+PS1:Pitch (-24,..,0,..,24)
+60 00 04 43 --> 00 .. 18 .. 30
+
+PS1:Level (0..100)
+60 00 04 47 --> 00 .. 64
+
+PS2:Pitch (-24,..,0,..,24)
+60 00 04 49 --> 00 .. 16 .. 30
+
+PS2:Level (0..100)
+60 00 04 4D --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 04 4F --> 00 .. 64
+
+==> Harmonist
+
+60 00 04 51 --> yy
+
+  1 Voice: 00
+  2 Voice: 01
+
+Note: HR2 on 2Voice only
+
+HR1:Harmony (-2oct,..,Unison,..,+2oct,User)
+60 00 04 52 --> 00 .. 0E .. 1C, 1D
+
+HR2:Harmony (-2oct,..,Unison,..,+2oct,User)
+60 00 04 56 --> 00 .. 0E .. 1C, 1D
+
+Direct Mix (0..100)
+60 00 04 5B --> 00 .. 64
+
+Master Key ( C(Am),..,B(G#m) )
+60 00 07 18 --> 00 .. 0B
+
+==> AC Processor
+
+60 00 04 79 --> yy
+
+  Small:  00
+  Medium: 01
+  Bright: 02
+  Power:  03
+
+Bass (-50..0..50)
+60 00 04 7A --> 00 .. 32 ..64
+
+Middle (-50..0..50)
+60 00 04 7B --> 00 .. 32 ..64
+
+Middle Freq (20Hz, .. , 10kHz)
+60 00 04 7C --> 00 .. 1B
+
+Treble (-50..0..50)
+60 00 04 7D --> 00 .. 32 .. 64
+
+Presence (-50..0..50)
+60 00 04 7E --> 00 .. 32 .. 64
+
+Level (0..100)
+60 00 04 7F --> 00 .. 64
+
+==> Phaser
+
+60 00 05 01 --> yy
+
+    4Stage:  00
+    8Stage:  01
+    12Stage: 02
+    BiPhase: 03
+
+Rate (0..100)
+60 00 05 02 --> 00 .. 64
+
+Depth (0..100)
+60 00 05 03 --> 00 .. 64
+
+Manual (0..100)
+60 00 05 04 --> 00 .. 64
+
+Reso (0..100)
+60 00 05 05 --> 00 .. 64
+
+Step Rate (Off, 0..100)
+60 00 05 06 --> 00, 01 .. 65
+
+Effect Level (0..100)
+60 00 05 07 --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 05 08 --> 00 .. 64
+
+==> Flanger
+
+Rate (0..100)
+60 00 05 0A --> 00 .. 64
+
+Depth (0..100)
+60 00 05 0B --> 00 .. 64
+
+Manual (0..100)
+60 00 05 0C --> 00 .. 64
+
+Reso (0..100)
+60 00 05 0D --> 00 .. 64
+
+Low Cut (Flat, 55Hz.. 800Hz)
+60 00 05 0F --> 00, 01 .. 0A
+
+Effect Level (0..100)
+60 00 05 10 --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 05 11 --> 00 .. 64
+
+==> Tremolo
+
+Wave Shape (0..100)
+60 00 05 13 --> 00 .. 64
+
+Rate (0..100)
+60 00 05 14 --> 00 .. 64
+
+Depth (0..100)
+60 00 05 15 --> 00 .. 64
+
+Level (0..100)
+60 00 05 16 --> 00 .. 64
+
+==> Rotary
+
+Rate (0..100)
+60 00 05 1A --> 00 .. 64
+
+Depth (0..100)
+60 00 05 1D --> 00 .. 64
+
+Level (0..100)
+60 00 05 1E --> 00 .. 64
+
+==> Uni-V
+
+Rate (0..100)
+60 00 05 20 --> 00 .. 64
+
+Depth (0..100)
+60 00 05 21 --> 00 .. 64
+
+Level (0..100)
+60 00 05 22 --> 00 .. 64
+
+==> Slicer
+
+Pattern (P1..P20)
+60 00 05 2B --> 00 .. 13
+
+Rate (0..100)
+60 00 05 2C --> 00 .. 64
+
+Trigger Sens (0..100)
+60 00 05 2D --> 00 .. 64
+
+Effect Level (0..100)
+60 00 05 2E --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 05 2F --> 00 .. 64
+
+==> Vibrato
+
+Rate (0..100)
+60 00 05 31 --> 00 .. 64
+
+Depth (0..100)
+60 00 05 32 --> 00 .. 64
+
+Level (0..100)
+60 00 05 35 --> 00 .. 64
+
+==> Ring Mod
+
+60 00 05 37 --> yy
+
+  Normal:      00
+  Intelligent: 01 
+
+Frequency (0..100)
+60 00 05 38 --> 00 .. 64
+
+Effect Level (0..100)
+60 00 05 39 --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 05 3A --> 00 .. 64
+
+==> Humanizer
+
+60 00 05 3C --> yy
+
+    Picking: 00
+    Auto:    01
+
+Note: Manual on Auto only
+Note: Sens on Picking only
+
+Vowel1 (a,e,i,o,u)
+60 00 05 3D --> 00 .. 04
+
+Vowel2 (a,e,i,o,u)
+60 00 05 3E --> 00 .. 04
+
+Sens (0..100)
+60 00 05 3F --> 00 .. 64
+
+Rate (0..100)
+60 00 05 40 --> 00 .. 64
+
+Depth (0..100)
+60 00 05 41 --> 00 .. 64
+
+Manual (0..100)
+60 00 05 42 --> 00 .. 64
+
+Level (0..100)
+60 00 05 43 --> 00 .. 64
+
+==> Chorus
+
+Low Rate (0..100)
+60 00 05 46 --> 00 .. 64
+
+Low Depth (0..100)
+60 00 05 47 --> 00 .. 64
+
+Low Pre-Delay (0.0..40ms)
+60 00 05 48 --> 00 .. 50
+
+Low Level (0..100)
+60 00 05 49 --> 00 .. 64
+
+High Rate (0..100)
+60 00 05 4A --> 00 .. 64
+
+High Depth (0..100)
+60 00 05 4B --> 00 .. 64
+
+High Level (0..100)
+60 00 05 4D --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 05 4E --> 00 .. 64
+
+==> Acoustic Guitar Sim
+
+High (-50..0..50)
+60 00 10 1F --> 00 .. 32 .. 64
+
+Body (0..100)
+60 00 10 20 --> 00 .. 64
+
+Low (-50..0..50)
+60 00 10 21 --> 00 .. 32 .. 64
+
+Level (0..100)
+60 00 10 23 --> 00 .. 64
+
+
+******************
+***** Reverb *****
+******************
+
+Reverb Toggle (Off, On)
+60 00 06 10 --> 00, 01
+
+Note: Probably simpler to use CC# 18
+
+Select for Edit
+60 00 06 11 --> xx
+
+  See Reverb button assign for values
+
+[Parameters]
+
+Reverb Time (0.1sec,..,10sec)
+60 00 06 12 --> 00 .. 63
+
+Pre-Delay (0,..,500ms)
+60 00 06 13 --> 00 00 .. 03 74
+                hh ll
+
+Note1: hhll is a 9-bit value representing pre-delay in ms. Because
+       sysex data is limited to 7 bits, encoding is:
+
+       hh                   ll
+       0 0 0 0 0 0 b8 b7    0 b6 b5 b4 b3 b2 b1 b0
+
+       So, the maximum value would be 03 74, or
+
+       0 0 0 0 0 0 1 1     0 1 1 1 0 1 0 0
+
+Low Cut (Flat, 20Hz,..,800Hz)
+60 00 06 15 --> 00, 01 .. 11
+
+High Cut (630Hz,..,12.5kHz, Flat)
+60 00 06 16 --> 00 .. 0D, 0E
+
+Density (0..10)
+60 00 06 17 --> 00 .. 0A
+
+Level (0..100)
+60 00 06 18 --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 06 19 --> 00 .. 64
+
+Note: Spring Sens for spring reverb only
+
+Spring Sensitivity (0..100)
+60 00 06 1A --> 00 .. 64
+
+
+*********************************
+**** Color Button Management ****
+*********************************
+
+[Assign DSP to Buttons]
+
+60 00 12 01 --> xx    Boost Green
+60 00 12 02 --> xx    Boost Red
+60 00 12 03 --> xx    Boost Yellow
+
+  Values:
+
+  Mid Boost:    00
+  Clean Boost:  01
+  Treble Boost: 02
+  Crunch OD:    03
+  Natural OD:   04
+  Warm OD:      05
+  Fat DS:       06
+
+  Metal DS:     08
+  Oct Fuzz:     09
+  Blues Drive:  0A
+  Overdrive:    0B
+  T-Scream:     0C
+  Turbo OD:     0D
+  Distortion:   0E
+  Rat:          0F
+  Guv DS:       10
+  DST+:         11
+  Metal Zone:   12
+  '60s Fuzz:    13
+  Muff Fuzz:    14
+
+60 00 12 04 --> xx    Mod Green
+60 00 12 05 --> xx    Mod Red
+60 00 12 06 --> xx    Mod Yellow
+
+  Values:
+
+  T Wah:         00
+  Auto Wah:      01
+  Pedal Wah:     02
+  Comp:          03
+  Limiter:       04
+
+  Graphic EQ:    06
+  Parametric EQ: 07
+
+  Guitar Sim:    09
+  Slow Gear:     0A
+
+  Wave Synth:    0C
+
+  Octave:        0E
+  Pitch Shifter: 0F
+
+  Harmonist:     10
+
+  AC Processor:  12
+  Phaser:        13
+  Flanger:       14
+  Tremolo:       15
+  Rotary:        16
+  Uni-V:         17
+
+  Slicer:        19
+  Vibrato:       1A
+  Ring Mod:      1B
+  Humanizer:     1C 
+  Chorus:        1D
+  AC Guitar Sim: 1F
+
+60 00 12 07 --> xx    Delay Green
+60 00 12 08 --> xx    Delay Red
+60 00 12 09 --> xx    Delay Yellow
+
+  Values:
+
+  Digital:   00
+  Reverse:   06
+  Analog:    07
+  Tape Echo: 08
+  Modulate:  09
+
+60 00 12 0A --> xx    FX Green
+60 00 12 0B --> xx    FX Red
+60 00 12 0C --> xx    FX Yellow
+
+  Values:
+
+  (See Mod Above)
+
+60 00 12 0D --> xx    Reverb Green
+60 00 12 0E --> xx    Reverb Red
+60 00 12 0F --> xx    Reverb Yellow
+
+  Values:
+
+  Room:     01
+  Hall:     03
+  Plate:    04
+  Spring:   05
+  Modulate: 06
+
+[Select Active Color]
+
+60 00 12 10 --> xx    Boost
+60 00 12 11 --> xx    Mod
+60 00 12 12 --> xx    Delay
+60 00 12 13 --> xx    FX
+60 00 12 14 --> xx    Reverb
+
+  Values:
+
+  Green:  00
+  Red:    01
+  Yellow: 02
+
+[Color Button Press]
+
+Enter BTS mode:
+7F 00 00 01 --> 01
+
+7F 01 01 00 --> 00  Boost/Mod
+7F 01 01 01 --> 00  Delay/FX
+7F 01 01 02 --> 00  Reverb
+
+Exit BTS mode
+7F 00 00 01 --> 00
+
+
+***************************
+****** Range Mapping ******
+***************************
+
+USB Control
+00 00 00 51
+00 00 00 57
+
+======================
+
+Loop Control
+00 00 04 00
+00 00 04 03
+
+Amplifer Panel:
+00 00 04 20
+00 00 04 29
+
+======================
+
+Preset Recall
+00 01 00 00
+
+======================
+
+MIDI Channel Select
+00 02 00 00
+
+======================
+
+Amp Name (Write here before preset store)
+60 00 00 00
+
+--
+
+Boost/Mod A-Range Toggle
+60 00 00 30
+
+Boost (Select for Edit)
+60 00 00 31
+
+Boost Parms
+60 00 00 32
+60 00 00 38
+
+Boost/Mod B-range Toggle
+60 00 01 40
+
+--
+
+Delay/FX B-range Toggle
+60 00 03 4C
+
+--
+
+EFX (Select for edit)
+60 00 03 4D
+
+--
+
+T Wah
+60 00 03 58
+60 00 03 5E
+
+Auto Wah
+60 00 03 60
+60 00 03 66
+
+Pedal Wah
+60 00 03 68
+60 00 03 6D
+
+Compressor
+60 00 03 6F
+60 00 03 73
+
+Limiter
+60 00 03 75
+60 00 03 7A
+
+Graphic EQ
+60 00 03 7C
+60 00 04 06
+
+Parametric EQ
+60 00 04 09
+60 00 04 12
+
+Guitar Sim
+60 00 04 1A
+60 00 04 1E
+
+Slow Gear
+60 00 04 20
+60 00 04 22
+
+Wave Synth
+60 00 04 2C
+60 00 04 33
+
+Octave Parms
+60 00 04 3D
+60 00 04 3F
+
+Pitch Shifter
+60 00 04 41
+60 00 04 4F
+
+Harmonist
+60 00 04 51
+60 00 04 5B     Note: Also 60 00 07 18 (see below)
+
+AC Guitar Processor
+60 00 04 79
+60 00 04 7F
+
+Phaser
+60 00 05 01
+60 00 05 08
+
+Flanger
+60 00 05 0A
+60 00 05 11
+
+Tremolo Parms
+60 00 05 13
+60 00 05 16
+
+Rotary Parms
+60 00 05 1A
+60 00 05 1E
+
+Uni-V Parms
+60 00 05 20
+60 00 05 22
+
+Slicer Parms
+60 00 05 2B
+60 00 05 2F
+
+Vibrato Parms
+60 00 05 31
+60 00 05 35
+
+Ring Mod
+60 00 05 37
+60 00 05 3A
+
+Humanizer
+60 00 05 3C
+60 00 05 43
+
+Chorus Parms
+60 00 05 46
+60 00 05 4E
+
+--
+
+Delay/FX A-Range Toggle
+60 00 05 60
+
+Delay (Select for Edit)
+60 00 05 61
+
+Delay Parms
+60 00 05 62
+60 00 05 67
+
+--
+
+Reverb Toggle
+60 00 06 10
+
+Reverb Parms
+60 00 06 11
+60 00 06 1A
+
+--
+
+Noise Gate Parms
+60 00 06 63
+60 00 06 65
+
+--
+
+Harmonist Master Key
+60 00 07 18
+
+--
+
+Something to do with switching chain 
+60 00 07 20
+60 00 07 23
+
+--
+
+Acoustic Guitar Sim
+60 00 10 1F
+60 00 10 23
+
+--
+
+Chain
+60 00 12 00
+
+--
+
+Button Assign
+60 00 12 01  
+60 00 12 0F
+
+--
+
+Active Color Select
+60 00 12 10
+60 00 12 14
+
+======================
+
+BTS Mode Toggle
+7F 00 00 01
+
+Preset Store
+7F 00 01 04
+
+Button Press
+7F 01 01 00
+7F 01 01 02
