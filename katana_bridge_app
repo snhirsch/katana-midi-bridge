@@ -88,7 +88,7 @@ def capture_preset( katana, program ):
 
 # Handle our presets
 def handle_pc( trigger, katana, program ):
-    if program > 10:
+    if program > 9:
         if trigger.is_armed():
             trigger.clear()
             capture_preset( katana, program )
