@@ -42,9 +42,10 @@ class PanelPreset:
                 handler( value, lineNum )
 
             if obj.state == obj.Done:
+                obj.volume_midi_scale = obj.get_data(PANEL_STATE_ADDR, 18, 1)[0] / 128
                 yield obj
                 obj = PanelPreset()
-
+                
         if obj.state != obj.Start:
             print( "Parse error at line %d." % lineNum )
 
@@ -59,30 +60,32 @@ class PanelPreset:
         #       buffer.
 
         # Enter edit mode
-        katana.set_sysex_data( EDIT_ON )
-        katana.set_sysex_data( EDIT_ON )
-        preset_query = CURRENT_PRESET_ADDR[:]
-        preset_query.extend( CURRENT_PRESET_LEN )
-        dummy, preset = katana.get_sysex_data( preset_query )
+        katana.send_sysex_data( EDIT_ON )
+        katana.send_sysex_data( EDIT_ON )
+        dummy, preset = katana.query_sysex_data( CURRENT_PRESET_ADDR, CURRENT_PRESET_LEN )
         # Leave edit mode
-        katana.set_sysex_data( EDIT_OFF )
+        katana.send_sysex_data( EDIT_OFF )
         obj.ch = preset[0][1]
 
-        # Normalize sysex-level preset id to the one presented on
-        # public PC implementation.
+        # Normalize low-level preset id to the one presented on public
+        # PC implementation
         obj.ch -= 1
         if obj.ch < 0: obj.ch = 4
 
         # Read color assign and state
-        addr, data = katana.get_sysex_data( COLOR_ASSIGN_QUERY )
+        addr, data = katana.query_sysex_data( COLOR_ASSIGN_ADDR, COLOR_ASSIGN_LEN )
         obj.addr.append( addr[0] )
         obj.data.append( data[0] )
 
         # Read amplifier panel block
-        addr, data = katana.get_sysex_data( PANEL_STATE_QUERY )
+        addr, data = katana.query_sysex_data( PANEL_STATE_ADDR, PANEL_STATE_LEN )
         obj.addr.append( addr[0] )
         obj.data.append( data[0] )
 
+        # Keep this around so we can properly scale controller
+        # pedal input
+        obj.volume_midi_scale = data[0][18] / 128
+        
         return obj
 
     def __init__( self ):
@@ -91,7 +94,9 @@ class PanelPreset:
         self.ch = -1
         self.addr = []
         self.data = []
-
+        self.by_addr = {}
+        self.curr_address = None
+        
     def _preset( self, value, lineNum ):
         if self.state != self.Start:
             print( "Phase error at line %d. Expected Start, but was %d." % (lineNum, self.state) )
@@ -100,6 +105,8 @@ class PanelPreset:
         try:
             self.id = int( value )
             self.state = self.SawId
+            self.curr_address = None
+            
         except ValueError:
             print( "Parse error at line %d. Expecting single integer." )
             sys.exit( 1 )
@@ -121,10 +128,13 @@ class PanelPreset:
             print( "Phase error at line %d. Expected SawCh or SawData, but was %d." % (lineNum, self.state) )
             sys.exit( 1 )
 
-        address = []
+        address_bytes = []
         for hex in value.split():
-            address.append( int(hex,16) )
-        self.addr.append( address )
+            address_bytes.append( int(hex,16) )
+
+        self.curr_address = tuple( address_bytes )
+        self.by_addr[ self.curr_address ] = []
+        self.addr.append( address_bytes )
         self.state = self.SawAddr
 
     def _data( self, value, lineNum ):
@@ -136,6 +146,7 @@ class PanelPreset:
         for hex in value.split():
             data.append( int(hex,16) )
         self.data.append( data )
+        self.by_addr[ self.curr_address ].extend( data )
         self.state = self.SawData
 
     def _endPreset( self, value, lineNum ):
@@ -160,10 +171,7 @@ class PanelPreset:
         sleep( 0.05 )
 
         for addr, data in zip( self.addr, self.data ):
-            msg = []
-            msg.extend( addr )
-            msg.extend( data )
-            katanaObj.set_sysex_data( msg )
+            katanaObj.send_sysex_data( addr, data )
 
     def serialize( self, outfh ):
         outfh.write( "_preset %d\n" % self.id )
@@ -177,7 +185,28 @@ class PanelPreset:
 
         outfh.write( "_endPreset %d\n" % self.id )
 
+    # Controller input 0..127.  Scale this so it maxes out at the captured
+    # volume. 
+    def scale_volume_to_midi( self, controller_value ):
+        if controller_value > 0:
+            controller_value += 1
+        return int( controller_value * self.volume_midi_scale )
 
+    @staticmethod
+    def scale_volume_to_midi_default( controller_value ):
+        if controller_value > 0:
+            controller_value += 1
+        return int( controller_value * (100/128) ) 
+        
+    def get_data( self, address, offset, count ):
+        if address in self.by_addr:
+            bytes = self.by_addr[ address ]
+            if offset + count > len( bytes ):
+                count = len( bytes ) - offset
+            return bytes[ offset : offset + count ]
+        else:
+            return []
+        
 if __name__ == '__main__':
     file = sys.stdout
 
@@ -189,4 +218,5 @@ if __name__ == '__main__':
 
     for obj in objs:
         obj.serialize( file )
-
+        test_data = obj.get_data( (0x00,0x00,0x04,0x10), 18, 1 )
+        print( "Test data = " + str(test_data).strip('[]') )

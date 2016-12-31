@@ -5,6 +5,7 @@ from time import sleep
 import threading
 import sys
 from globals import *
+import syslog
 
 class Katana:
 
@@ -38,7 +39,7 @@ class Katana:
     # Drain incoming USB buffer
     def _clear_input( self ):
         # Force off edit mode
-        self.set_sysex_data( EDIT_OFF )
+        self.send_sysex_data( EDIT_OFF )
         start = time.time()
         while True:
             msg = self.inport.poll()
@@ -49,8 +50,7 @@ class Katana:
     # Called by rtmidi in a separate thread
     def _post( self, msg ):
         if msg.type != 'sysex':
-            print( "Err: Saw msg type: " + msg.type )
-            sys.exit( 1 )
+            syslog.syslog( "Err: Saw msg type: " + msg.type )
 
         self.receive_cond.acquire()
 
@@ -64,6 +64,7 @@ class Katana:
         self.receive_cond.release()
 
     def _send( self, prefix, msg ):
+        # print( "DEBUG: msg = ", msg )
         # Calculate Roland cksum on msg only
         accum = 0
         for byte in msg:
@@ -77,7 +78,13 @@ class Katana:
         self.sysex.data = data
         self.outport.send( self.sysex )
 
-    def set_sysex_data( self, msg ):
+    def send_sysex_data( self, addr, len=None ):
+        if len == None:
+            msg = addr
+        else:
+            msg = list( addr )
+            msg.extend( len )
+
         self._send( SEND_PREFIX, msg )
 
     # Return a tuple of [addr1, addr2, .. , addrN], [ [d1a, .. d1X], [d2a, ,, d2X], .. [dNa, .. dNX] ]
@@ -96,17 +103,18 @@ class Katana:
         sleep( timeout )
         return self.addr, self.data
 
-    def get_sysex_data( self, msg ):
+    def query_sysex_data( self, addr, len ):
         self.receive_cond.acquire()
 
         self.data = []
         self.addr = []
+        msg = list( addr )
+        msg.extend( len )
         self._send( QUERY_PREFIX, msg )
 
         result = self.receive_cond.wait(5)
         if not result:
-            print( "Error: Timeout on cond wait" )
-            sys.exit( 1 )
+            syslog.syslog( "Error: Timeout on cond wait" )
 
         self.receive_cond.release()
 
@@ -120,12 +128,10 @@ class Katana:
             program += 1
 
         # Enter edit mode
-        self.set_sysex_data( EDIT_ON )
-        preset_cmd = CURRENT_PRESET_ADDR[:]
-        preset_cmd.extend( [0x00, program] )
-        self.set_sysex_data( preset_cmd )
+        self.send_sysex_data( EDIT_ON )
+        self.send_sysex_data( CURRENT_PRESET_ADDR, (0x00,program) )
         # Leave edit mode
-        self.set_sysex_data( EDIT_OFF )
+        self.send_sysex_data( EDIT_OFF )
 
     def send_pc( self, program ):
         self.pc.program = program
@@ -137,29 +143,24 @@ class Katana:
         self.outport.send( self.cc )
 
     def volume( self, value ):
-        cmd = AMP_VOLUME_ADDR[:]
-        if value > 0: value += 1
-        cmd.append( int(value/2) )
-        self.set_sysex_data( cmd )
+        self.send_sysex_data( AMP_VOLUME_ADDR, (value,) )
 
     # Cycle amp-type LEDs in a distinctive pattern
     def signal( self ):
         # Get type, gain, volume
-        cmd = AMP_TYPE_ADDR[:]
-        cmd.extend( [0x00, 0x00, 0x00, 0x03] )
-        addr, curr = self.get_sysex_data( cmd )
+        type_addr, curr_type = self.query_sysex_data( AMP_TYPE_ADDR, (0x00,0x00,0x00,0x01) )
+        vol_addr, curr_vol = self.query_sysex_data( AMP_VOLUME_ADDR, (0x00,0x00,0x00,0x01) )
 
+        # Volume to zero
+        self.send_sysex_data( vol_addr[0], (0x00,) )
+        
         # Zero out gain and volume while cycling
         # the amp-type LEDs
-        cmd = AMP_TYPE_ADDR[:]
-        cmd.extend( [0x00, 0x00, 0x00] )
-        vals = (0, 2, 4, 2)
-        for i in range(4):
-            cmd[4] = vals[ i % 3 ]
-            self.set_sysex_data( cmd )
+        vals = (0, 1, 2, 3, 4, 3, 2, 1, 0)
+        for i in range(9):
+            val = vals[i]
+            self.send_sysex_data( type_addr[0], (val,)  )
             sleep( 0.6 )
 
-        # Restore type, gain, volume
-        cmd = AMP_TYPE_ADDR[:]
-        cmd.extend( curr[0] )
-        self.set_sysex_data( cmd )
+        self.send_sysex_data( type_addr[0], curr_type[0] )
+        self.send_sysex_data( vol_addr[0], curr_vol[0] )
