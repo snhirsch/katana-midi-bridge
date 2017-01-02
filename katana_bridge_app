@@ -5,6 +5,7 @@ import sys
 import os
 import mido
 import time
+import math
 
 from panel_preset import PanelPreset
 from katana import Katana
@@ -56,7 +57,12 @@ class Trigger:
             self.count = 0
             self.armed = True
 
-
+def log_scale( value ):
+    if value == 0: return 0
+    frac = (value + 1) / 128
+    scale = (math.exp(frac)-1)/(math.e-1)
+    return int( value * scale )
+            
 def load_presets( presets ):
     if os.path.isfile( preset_file ):
         # Read all presets
@@ -112,9 +118,9 @@ def handle_cc( trigger, katana, control, value ):
         # All our CC --> sysex mappings here
         if control == 70:
             if active_preset != None:
-                scaled = active_preset.scale_volume_to_midi( value )
+                scaled = active_preset.scale_volume_to_amp( log_scale(value) )
             else:
-                scaled = PanelPreset.scale_volume_to_midi_default( value )
+                scaled = PanelPreset.scale_volume_to_amp_default( log_scale(value) )
             katana.volume( scaled )
 
 
@@ -163,7 +169,7 @@ with mido.open_input(interface, virtual=virt) as commands:
         if msg.channel == listen_ch:
             if msg.type == 'control_change':
                 # print( "%s: ch = %d, ctrl = %d, val = %d" % (msg.type, msg.channel, msg.control, msg.value) )
-                if msg.control >= 16 and msg.control <= 18:
+                if msg.control >= 16 and msg.control <= 19:
                     katana.send_cc( msg.control, msg.value )
                 else:
                     handle_cc( trigger, katana, msg.control, msg.value )

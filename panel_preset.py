@@ -187,13 +187,13 @@ class PanelPreset:
 
     # Controller input 0..127.  Scale this so it maxes out at the captured
     # volume. 
-    def scale_volume_to_midi( self, controller_value ):
+    def scale_volume_to_amp( self, controller_value ):
         if controller_value > 0:
             controller_value += 1
         return int( controller_value * self.volume_midi_scale )
 
     @staticmethod
-    def scale_volume_to_midi_default( controller_value ):
+    def scale_volume_to_amp_default( controller_value ):
         if controller_value > 0:
             controller_value += 1
         return int( controller_value * (100/128) ) 
