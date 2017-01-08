@@ -166,18 +166,17 @@ trigger = Trigger()
 # Main processing loop
 with mido.open_input(interface, virtual=virt) as commands:
     for msg in commands:
-        if msg.channel == listen_ch:
-            if msg.type == 'control_change':
-                # print( "%s: ch = %d, ctrl = %d, val = %d" % (msg.type, msg.channel, msg.control, msg.value) )
-                if msg.control >= 16 and msg.control <= 19:
-                    katana.send_cc( msg.control, msg.value )
-                else:
-                    handle_cc( trigger, katana, msg.control, msg.value )
-            elif msg.type == 'program_change':
-                # print( "%s: ch = %d, prog = %d" % (msg.type, msg.channel, msg.program) )
-                if msg.program >= 0 and msg.program <= 4:
-                    katana.send_pc( msg.program )
-                    active_preset = None
-                else:
-                    active_preset = handle_pc( trigger, katana, msg.program )
+        if msg.type == 'control_change' and msg.channel == listen_ch:
+            # print( "%s: ch = %d, ctrl = %d, val = %d" % (msg.type, msg.channel, msg.control, msg.value) )
+            if msg.control >= 16 and msg.control <= 19:
+                katana.send_cc( msg.control, msg.value )
+            else:
+                handle_cc( trigger, katana, msg.control, msg.value )
+        elif msg.type == 'program_change' and msg.channel == listen_ch:
+            # print( "%s: ch = %d, prog = %d" % (msg.type, msg.channel, msg.program) )
+            if msg.program >= 0 and msg.program <= 4:
+                katana.send_pc( msg.program )
+                active_preset = None
+            else:
+                active_preset = handle_pc( trigger, katana, msg.program )
 
