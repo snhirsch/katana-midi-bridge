@@ -2,7 +2,7 @@ Boss Katana 100 Combo
 MIDI System-Exclusive (sysex) Specification
 Reverse Engineered by Steven Hirsch
 
-v1.5 - 2016-12-20
+v1.6 - 2017-02-12
 
 ==
 
@@ -391,7 +391,552 @@ Note: You must know which of Boost or Mod is active to use sysex
       for this.  Probably simpler to use CC# 16, since that will
       toggle whatever is effective at the time.
 
-(See effect_common)
+[Select for Edit]
+60 00 01 41 --> xx
+
+  See Mod/FX button assign for values
+
+[Parameters]
+
+==> T Wah
+
+Mode (LPF,HPF)
+60 00 01 4C --> 00, 01
+
+Polarity (Down,Up)
+60 00 01 40 --> 00, 01
+
+Sens (0..100)
+60 00 01 4E --> 00 .. 64
+
+Freq (0..100)
+60 00 01 4F --> 00 .. 64
+
+Peak (0..100)
+60 00 01 50 --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 01 41 --> 00 .. 64
+
+Effect Level (0..100)
+60 00 01 52 --> 00 .. 64
+
+==> Auto Wah
+
+Mode (LPF,HPF)
+60 00 01 54 --> 00, 01
+
+Freq (0..100)
+60 00 01 55 --> 00 .. 64
+
+Peak (0..100)
+60 00 01 56 --> 00 .. 64
+
+Rate (0..100)
+60 00 01 57 --> 00 .. 64
+
+Depth (0..100)
+60 00 01 58 --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 01 59 --> 00 .. 64
+
+Effect Level (0..100)
+60 00 01 5A --> 00 .. 64
+
+==> Pedal Wah
+
+60 00 01 5C --> yy
+
+  Cry Wah:     00
+  Vox Wah:     01
+  Fat Wah:     02
+  Light Wah:   03
+  7String Wah: 04
+  Reso Wah:    05
+
+Pedal Pos (0..100)
+60 00 01 5D --> 00 .. 64
+
+Pedal Min (0..100)
+60 00 01 5E --> 00 .. 64
+
+Pedal Max (0..100)
+60 00 01 5F --> 00 .. 64
+
+Effect Level (0..100)
+60 00 01 60 --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 01 61 --> 00 .. 64
+
+==> Comp
+
+60 00 01 63 --> yy
+
+  Boss Comp: 00
+  Hi-Band:   01
+  Light:     02
+  D-Comp:    03
+  Orange:    04
+  Fat:       05
+  Mild:      06
+
+Sustain (0..100)
+60 00 01 64 --> 00 .. 64
+
+Attack (0..100)
+60 00 01 65 --> 00 .. 64
+
+Tone (-50..0..50)
+60 00 01 66 --> 00 .. 32 .. 64
+
+Level (0..100)
+60 00 01 67 --> 00 .. 64
+
+==> Limiter
+
+60 00 01 69 --> yy
+
+ Boss Limiter: 00
+ Rack 160D:    01
+ VTG Rack U:   02
+
+Attack (0..100)
+60 00 01 6A --> 00 .. 64
+
+Threshold (0..100)
+60 00 01 6B --> 00 .. 64
+
+Ratio (1:1 .. Inf:1)
+60 00 01 6C --> 00 .. 11
+
+Release (0..100)
+60 00 01 6D --> 00 .. 64
+
+Level (0..100)
+60 00 01 6E --> 00 .. 64
+
+==> Graphic EQ
+
+Note: Values are -20, 0, 20
+
+31Hz
+60 00 01 70 --> 00, 14, 28
+
+62Hz
+60 00 01 71 --> 00, 14, 28
+
+125Hz
+60 00 01 72 --> 00, 14, 28
+
+250Hz
+60 00 01 73 --> 00, 14, 28
+
+500Hz
+60 00 01 74 --> 00, 14, 28
+
+1kHz
+60 00 01 75 --> 00, 14, 28
+
+2kHz
+60 00 01 76 --> 00, 14, 28
+
+4kHz
+60 00 01 77 --> 00, 14, 28
+
+8kHz
+60 00 01 78 --> 00, 14, 28
+
+16kHz
+60 00 01 79 --> 00, 14, 28
+
+Level
+60 00 01 7A --> 00, 14, 28
+
+==> Parametric EQ
+
+Low Gain (-20, 0, 20)
+60 00 01 7D --> 00, 14, 28
+
+Low-Mid Freq (20Hz - 10kHz)
+60 00 01 7E --> 00 .. 1B
+
+Low-Mid Q (0.5 - 16)
+60 00 01 7F --> 00 .. 05
+
+Low-Mid Gain (-20, 0, 20)
+60 00 02 00 --> 00, 14, 28
+
+High-Mid Freq (20Hz - 10kHz)
+60 00 02 01 --> 00 .. 1B
+
+High-Mid Q (0.5 - 16)
+60 00 02 02 --> 00 .. 05
+
+High-Mid Gain (-20, 0, 20)
+60 00 02 03 --> 00, 14, 28
+
+High Gain (-20, 0, 20)
+60 00 02 04 --> 00, 14, 28
+
+Level (-20, 0, 20)
+60 00 02 06 --> 00, 14, 28 
+
+==> Guitar Sim
+
+60 00 02 0E --> yy
+
+  S->H:      00
+  H->S:      01
+  H->HF:     02
+  S->Hollow: 03
+  H->Hollow: 04
+  S->AC:     05
+  H->AC:     06
+  P->AC:     07
+
+Note: S->H and H->S do not have 'Body'
+
+Low (-50..0..50)
+60 00 02 0F --> 00 .. 32 .. 64
+
+High (-50..0..50)
+60 00 02 10 --> 00 .. 32 .. 64
+
+Level (0..100)
+60 00 02 11 --> 00 .. 64
+
+Body (0..100)
+60 00 02 12 --> 00 .. 64
+
+==> Slow Gear
+
+Sens (0..100)
+60 00 02 14 --> 00 .. 64
+
+Rise Time (0..100)
+60 00 02 15 --> 00 .. 64
+
+Level (0..100)
+60 00 02 16 --> 00 .. 64
+
+==> Wave Synth
+
+60 00 02 20 --> yy
+
+    Saw:    00
+    Square: 01
+
+Cutoff (0..100)
+60 00 02 21 --> 00 .. 64
+
+Resonance (0..100)
+60 00 02 22 --> 00 .. 64
+
+Filter Sens (0..100)
+60 00 02 23 --> 00 .. 64
+
+Filter Decay (0..100)
+60 00 02 24 --> 00 .. 64
+
+Filter Depth (0..100)
+60 00 02 25 --> 00 .. 64
+
+Synth Level (0..100)
+60 00 02 26 --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 02 27 --> 00 .. 64
+
+==> Octave
+
+Range (1..4)
+60 00 02 31 --> 00 .. 03
+
+Effect Level (0..100)
+60 00 02 32 --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 02 33 --> 00 .. 64
+
+==> Pitch Shifter
+
+60 00 02 35 --> yy
+
+  1 Voice: 00
+  2 Voice: 01
+
+Note: PS2 on 2Voice Only
+
+PS1:Pitch (-24,..,0,..,24)
+60 00 02 37 --> 00 .. 18 .. 30
+
+PS1:Level (0..100)
+60 00 02 3B --> 00 .. 64
+
+PS2:Pitch (-24,..,0,..,24)
+60 00 02 3D --> 00 .. 16 .. 30
+
+PS2:Level (0..100)
+60 00 02 41 --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 02 43 --> 00 .. 64
+
+==> Harmonist
+
+60 00 02 45 --> yy
+
+  1 Voice: 00
+  2 Voice: 01
+
+Note: HR2 on 2Voice only
+
+HR1:Harmony (-2oct,..,Unison,..,+2oct,User)
+60 00 02 46 --> 00 .. 0E .. 1C, 1D
+
+HR2:Harmony (-2oct,..,Unison,..,+2oct,User)
+60 00 02 4A --> 00 .. 0E .. 1C, 1D
+
+Direct Mix (0..100)
+60 00 02 4F --> 00 .. 64
+
+Note: MOD and EFX Harmonist share a common Master Key setting
+
+Master Key ( C(Am),..,B(G#m) )
+60 00 07 18 --> 00 .. 0B
+
+==> AC Processor
+
+60 00 02 6D --> yy
+
+  Small:  00
+  Medium: 01
+  Bright: 02
+  Power:  03
+
+Bass (-50..0..50)
+60 00 02 6E --> 00 .. 32 ..64
+
+Middle (-50..0..50)
+60 00 02 6F --> 00 .. 32 ..64
+
+Middle Freq (20Hz, .. , 10kHz)
+60 00 02 70 --> 00 .. 1B
+
+Treble (-50..0..50)
+60 00 02 71 --> 00 .. 32 .. 64
+
+Presence (-50..0..50)
+60 00 02 72 --> 00 .. 32 .. 64
+
+Level (0..100)
+60 00 02 73 --> 00 .. 64
+
+==> Phaser
+
+60 00 02 75 --> yy
+
+    4Stage:  00
+    8Stage:  01
+    12Stage: 02
+    BiPhase: 03
+
+Rate (0..100)
+60 00 02 76 --> 00 .. 64
+
+Depth (0..100)
+60 00 02 77 --> 00 .. 64
+
+Manual (0..100)
+60 00 02 78 --> 00 .. 64
+
+Reso (0..100)
+60 00 02 79 --> 00 .. 64
+
+Step Rate (Off, 0..100)
+60 00 02 7A --> 00, 01 .. 65
+
+Effect Level (0..100)
+60 00 02 7B --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 02 7C --> 00 .. 64
+
+==> Flanger
+
+Rate (0..100)
+60 00 02 7E --> 00 .. 64
+
+Depth (0..100)
+60 00 02 7F --> 00 .. 64
+
+Manual (0..100)
+60 00 03 00 --> 00 .. 64
+
+Reso (0..100)
+60 00 03 01 --> 00 .. 64
+
+Low Cut (Flat, 55Hz.. 800Hz)
+60 00 03 03 --> 00, 01 .. 0A
+
+Effect Level (0..100)
+60 00 03 04 --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 03 05 --> 00 .. 64
+
+==> Tremolo
+
+Wave Shape (0..100)
+60 00 03 07 --> 00 .. 64
+
+Rate (0..100)
+60 00 03 08 --> 00 .. 64
+
+Depth (0..100)
+60 00 03 09 --> 00 .. 64
+
+Level (0..100)
+60 00 03 0A --> 00 .. 64
+
+==> Rotary
+
+Rate (0..100)
+60 00 03 0E --> 00 .. 64
+
+Depth (0..100)
+60 00 03 11 --> 00 .. 64
+
+Level (0..100)
+60 00 03 12 --> 00 .. 64
+
+==> Uni-V
+
+Rate (0..100)
+60 00 03 14 --> 00 .. 64
+
+Depth (0..100)
+60 00 03 15 --> 00 .. 64
+
+Level (0..100)
+60 00 03 16 --> 00 .. 64
+
+==> Slicer
+
+Pattern (P1..P20)
+60 00 03 1F --> 00 .. 13
+
+Rate (0..100)
+60 00 03 20 --> 00 .. 64
+
+Trigger Sens (0..100)
+60 00 03 21 --> 00 .. 64
+
+Effect Level (0..100)
+60 00 03 22 --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 03 23 --> 00 .. 64
+
+==> Vibrato
+
+Rate (0..100)
+60 00 03 25 --> 00 .. 64
+
+Depth (0..100)
+60 00 03 26 --> 00 .. 64
+
+Level (0..100)
+60 00 03 29 --> 00 .. 64
+
+==> Ring Mod
+
+60 00 03 2B --> yy
+
+  Normal:      00
+  Intelligent: 01 
+
+Frequency (0..100)
+60 00 03 2C --> 00 .. 64
+
+Effect Level (0..100)
+60 00 03 2D --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 03 2E --> 00 .. 64
+
+==> Humanizer
+
+60 00 03 30 --> yy
+
+    Picking: 00
+    Auto:    01
+
+Note: Manual on Auto only
+Note: Sens on Picking only
+
+Vowel1 (a,e,i,o,u)
+60 00 03 31 --> 00 .. 04
+
+Vowel2 (a,e,i,o,u)
+60 00 03 32 --> 00 .. 04
+
+Sens (0..100)
+60 00 03 33 --> 00 .. 64
+
+Rate (0..100)
+60 00 03 34 --> 00 .. 64
+
+Depth (0..100)
+60 00 03 35 --> 00 .. 64
+
+Manual (0..100)
+60 00 03 36 --> 00 .. 64
+
+Level (0..100)
+60 00 03 37 --> 00 .. 64
+
+==> Chorus
+
+Low Rate (0..100)
+60 00 03 3A --> 00 .. 64
+
+Low Depth (0..100)
+60 00 03 3B --> 00 .. 64
+
+Low Pre-Delay (0.0..40ms)
+60 00 03 3C --> 00 .. 50
+
+Low Level (0..100)
+60 00 03 3D --> 00 .. 64
+
+High Rate (0..100)
+60 00 03 3E --> 00 .. 64
+
+High Depth (0..100)
+60 00 03 3F --> 00 .. 64
+
+High Level (0..100)
+60 00 03 41 --> 00 .. 64
+
+Direct Mix (0..100)
+60 00 03 49 --> 00 .. 64
+
+==> Acoustic Guitar Sim
+
+Body (0..100)
+60 00 10 11 --> 00 .. 64
+
+Low (-50..0..50)
+60 00 10 12 --> 00 .. 32 .. 64
+
+High (-50..0..50)
+60 00 10 10 --> 00 .. 32 .. 64
+
+Level (0..100)
+60 00 10 14 --> 00 .. 64
 
 
 *************************
@@ -451,14 +996,6 @@ B-Range Toggle (Off, On)
 Note: You must know which of Delay or FX is active to use sysex
       for this.  Probably simpler to use CC# 17, since that will
       toggle whatever is effective at the time.
-
-(See effect_common)
-
-
-***********************************
-********** Built-in EFX ***********
-** Can be in Mod and/or EFX slot **
-***********************************
 
 [Select for Edit]
 60 00 03 4D --> xx
@@ -993,14 +1530,14 @@ Direct Mix (0..100)
 
 ==> Acoustic Guitar Sim
 
-High (-50..0..50)
-60 00 10 1F --> 00 .. 32 .. 64
-
 Body (0..100)
 60 00 10 20 --> 00 .. 64
 
 Low (-50..0..50)
 60 00 10 21 --> 00 .. 32 .. 64
+
+High (-50..0..50)
+60 00 10 1F --> 00 .. 32 .. 64
 
 Level (0..100)
 60 00 10 23 --> 00 .. 64
@@ -1242,6 +1779,109 @@ Boost/Mod B-range Toggle
 
 --
 
+EFX (Select for edit)
+60 00 01 41
+
+--
+
+T Wah
+60 00 01 4C
+60 00 01 52
+
+Auto Wah
+60 00 01 54
+60 00 01 5A
+
+Pedal Wah
+60 00 01 5C
+60 00 01 61
+
+Compressor
+60 00 01 63
+60 00 01 67
+
+Limiter
+60 00 01 69
+60 00 01 6E
+
+Graphic EQ
+60 00 01 70
+60 00 01 7A
+
+Parametric EQ
+60 00 01 7D
+60 00 02 06
+
+Guitar Sim
+60 00 02 0E
+60 00 02 12
+
+Slow Gear
+60 00 02 14
+60 00 02 16
+
+Wave Synth
+60 00 02 20
+60 00 02 27
+
+Octave Parms
+60 00 02 31
+60 00 02 33
+
+Pitch Shifter
+60 00 02 35
+60 00 02 43
+
+Harmonist
+60 00 02 45
+60 00 02 4F     Note: Also 60 00 07 18 (see below)
+
+AC Guitar Processor
+60 00 02 6D
+60 00 02 73
+
+Phaser
+60 00 02 75
+60 00 02 7C
+
+Flanger
+60 00 02 7E
+60 00 03 05
+
+Tremolo Parms
+60 00 03 07
+60 00 03 0A
+
+Rotary Parms
+60 00 03 0E
+60 00 03 12
+
+Uni-V Parms
+60 00 03 14
+60 00 03 16
+
+Slicer Parms
+60 00 03 1F
+60 00 03 23
+
+Vibrato Parms
+60 00 03 25
+60 00 03 29
+
+Ring Mod
+60 00 03 2B
+60 00 03 2E
+
+Humanizer
+60 00 03 30
+60 00 03 37
+
+Chorus Parms
+60 00 03 3A
+60 00 03 49
+
+--
+
 Delay/FX B-range Toggle
 60 00 03 4C
 
@@ -1388,7 +2028,13 @@ Something to do with switching chain
 
 --
 
-Acoustic Guitar Sim
+Acoustic Guitar Sim (MOD)
+60 00 10 10
+60 00 10 14
+
+--
+
+Acoustic Guitar Sim (EFX)
 60 00 10 1F
 60 00 10 23
 
