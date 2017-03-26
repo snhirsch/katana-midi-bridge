@@ -48,6 +48,11 @@ class ComplexDSP:
 
         blocks = [ [global_base, global_parms['length']], [dsp_base, dsp_parms['length']] ]
 
+        # Both mod and fx share the same global key setting
+        if name == "PitchShifter":
+            extra = [ self.master_key['baseAddr'], self.master_key['length'] ]
+            blocks.append( extra )
+        
         return { "name":name, "blocks":blocks }
         
             
