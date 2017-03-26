@@ -1,0 +1,116 @@
+{
+    "colorEnum": {
+        "dataType": "enum",
+        "values": [0, 1, 2],
+        "display": ["Green", "Red", "Yellow"]
+    },
+
+    "colorAssignIndex": {
+        "baseAddr": [96, 0, 18, 1],
+        "length": 15,
+        "knob": {
+            "boostMod": {
+                "range": {
+                    "a": {
+                        "group": "simple",
+                        "category": "boost",
+                        "colorOffset": {
+                            "green": 0,
+                            "red":   1,
+                            "yellow":2
+                        }
+                    },
+                    "b": {
+                        "group": "complex",
+                        "category": "mod",
+                        "colorOffset": {
+                            "green": 3,
+                            "red":   4,
+                            "yellow":5
+                        }
+                    }
+                }
+            },
+
+            "delayFx": {
+                "range": {
+                    "a": {
+                        "group": "simple",
+                        "category": "delay",
+                        "colorOffset": {
+                            "green": 6,
+                            "red":   7,
+                            "yellow":8
+                        }
+                    },
+                    "b": {
+                        "group": "complex",
+                        "category": "fx",
+                        "colorOffset": {
+                            "green": 9,
+                            "red":   10,
+                            "yellow":11
+                        }
+                    }
+                }
+            },
+
+            "reverb": {
+                "range": {
+                    "a": {
+                        "group": "simple",
+                        "category": "reverb",
+                        "colorOffset": {
+                            "green": 12,
+                            "red":   13,
+                            "yellow":14
+                        }
+                    }
+                }
+            }
+        }
+    },
+
+    "colorActiveIndex": {
+        "baseAddr": [96, 0, 18, 16],
+        "length": 5,
+        "tableRef": "colorEnum",
+        "categoryOffset": {
+            "boost": 0,
+            "mod":   1,
+            "delay": 2,
+            "efx":   3,
+            "reverb":4
+        }
+    },
+
+    "dspKnobs": ["boostMod", "delayFx", "reverb"],
+
+    "dspColorStateXlate": ["off", "green", "red", "yellow"],
+    
+    "dspColorState": {
+        "baseAddr": [0, 0, 4, 16],
+        "length": 3,
+        "knobOffset": {
+            "boostMod": 0,
+            "delayFx":  1,
+            "reverb":   2
+        }
+    },
+    
+    "dspKnobStateXlate": [ ["none","off"],
+                           ["a","green"], ["a","red"], ["a","yellow"],
+                           ["b","green"], ["b","red"], ["b","yellow"] ],
+    
+    "dspKnobState": {
+        "baseAddr": [0, 0, 4, 19],
+        "length": 3,
+        "knobOffset": {
+            "boostMod": 0,
+            "delayFx":  1,
+            "reverb":   2
+        }
+    }
+
+}
+

@@ -1,0 +1,37 @@
+{
+    "midiChannel": {
+        "addr": [0, 2, 0, 0],
+        "dataType": "byteRange",
+        "values": [0, 15]
+    },
+    "usbToEffectLevel": {
+        "addr": [0, 0, 0, 81],
+        "dataType": "centeredByteRange",
+        "values": [0, 20, 40],
+        "display": [-20, 0, 20]
+    },
+    "usbEffectOutLevel": {
+        "addr": [0, 0, 0, 82],
+        "dataType": "byteRange",
+        "values": [0, 100],
+        "display": [0, 200]
+    },
+    "usbMixLevel": {
+        "addr": [0, 0, 0, 83],
+        "dataType": "byteRange",
+        "values": [0, 100],
+        "display": [0, 200]
+    },
+    "usbLoopBack": {
+        "addr": [0, 0, 0, 86],
+        "dataType": "boolean",
+        "values": [0, 1],
+        "display": ["Off", "On"]
+    },
+    "usbDryOutLevel": {
+        "addr": [0, 0, 0, 87],
+        "dataType": "byteRange",
+        "values": [0, 100],
+        "display": [0, 200]
+    }
+}

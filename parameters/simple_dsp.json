@@ -1,0 +1,210 @@
+{
+    "models": {
+        "boost": {
+            "dataType": "enum",
+            "values": [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+            "display": ["MidBoost",
+                        "CleanBoost",
+                        "TrebleBoost",
+                        "CrunchOD",
+                        "NaturalOD",
+                        "WarmOD",
+                        "FatDS",
+                        "MetalDS",
+                        "OctFuzz",
+                        "BluesDrive",
+                        "Overdrive",
+                        "T-Scream",
+                        "TurboOD",
+                        "Distortion",
+                        "Rat",
+                        "GuvDS",
+                        "DST+",
+                        "MetalZone",
+                        "60sFuzz",
+                        "MuffFuzz"]
+        },
+
+        "delay": {
+            "dataType": "enum",
+            "values": [0, 6, 7, 8, 9],
+            "display": ["Digital", "Reverse", "Analog", "TapeEcho", "Modulate"]
+        },
+
+        "reverb": {
+            "dataType": "enum",
+            "values": [1, 3, 4, 5, 6],
+            "display": ["Room", "Hall", "Plate", "Spring", "Modulate"]
+        }
+    },
+
+    "parameters": {
+        "boost": {
+            "baseAddr": [96, 0, 0, 48],
+            "length": 9,
+            "parameters": {
+                "onOff": {
+                    "offset": 0,
+                    "dataType": "boolean",
+                    "values": [0, 1],
+                    "display": ["Off", "On"]
+                },
+                "select": {
+                    "offset": 1,
+                    "dataType": "enum",
+                    "tableRef": "modelSubtypes:boost"
+                },
+                "drive": {
+                    "offset": 2,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "bottom": {
+                    "offset": 3,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 50, 100],
+                    "displayValues": [-50, 0, 50]
+                },
+                "tone": {
+                    "offset": 4,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 50, 100],
+                    "display": [-50, 0, 50]
+                },
+                "solo": {
+                    "offset": 5,
+                    "dataType": "boolean",
+                    "values": [0, 1],
+                    "display": ["Off", "On"]
+                },
+                "soloLevel": {
+                    "offset": 6,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "effectLevel": {
+                    "offset": 7,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "directMix": {
+                    "offset": 8,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "delay": {
+            "baseAddr": [96, 0, 5, 96],
+            "length": 8,
+            "parameters": {
+                "onOff": {
+                    "offset": 0,
+                    "dataType": "boolean",
+                    "values": [0, 1],
+                    "display": ["Off", "On"]
+                },
+                "select": {
+                    "offset": 1,
+                    "dataType": "enum",
+                    "tableRef": "modelSubtypes:delay"
+                },
+                "delayTime": {
+                    "offset": 2,
+                    "dataType": "wordRange",
+                    "values": [1, 2000]
+                },
+                "feedback": {
+                    "offset": 4,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "highCut": {
+                    "offset": 5,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+                    "display": ["630Hz", "800Hz", "1kHz", "1k25Hz", "1k6Hz", "2kHz",
+                                "2k5Hz", "3k15Hz", "4kHz", "5kHz", "6k3Hz", "8kHz",
+                                "10kHz", "12k5Hz", "Flat"]
+                },
+                "effectLevel": {
+                    "offset": 6,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "directMix": {
+                    "offset": 7,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "reverb": {
+            "baseAddr": [96, 0, 6, 32],
+            "length": 11,
+            "parameters": {
+                "onOff": {
+                    "offset": 0,
+                    "dataType": "boolean",
+                    "values": [0, 1],
+                    "display": ["Off", "On"]
+                },
+                "select": {
+                    "offset": 1,
+                    "dataType": "enum",
+                    "tableRef": "modelSubtypes:reverb"
+                },
+                "reverbTime": {
+                    "offset": 2,
+                    "dataType": "byteRange",
+                    "values": [0, 99],
+                    "display": [0.1, 10]
+                },
+                "preDelay": {
+                    "offset": 3,
+                    "dataType": "wordRange",
+                    "values": [0, 500]
+                },
+                "lowCut": {
+                    "offset": 5,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                               16, 17],
+                    "display": ["Flat", "20Hz", "25Hz", "31.5Hz", "40Hz", "50Hz", "63Hz", "80Hz",
+                                "100Hz", "125Hz", "160Hz", "200Hz", "250Hz", "315Hz", "400Hz",
+                                "500Hz", "630Hz", "800Hz"]
+                },
+                "highCut": {
+                    "offset": 6,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+                    "display": ["630Hz", "800Hz", "1kHz", "1k25Hz", "1k6Hz", "2kHz",
+                                "2k5Hz", "3k15Hz", "4kHz", "5kHz", "6k3Hz", "8kHz",
+                                "10kHz", "12k5Hz", "Flat"]
+                },
+                "density": {
+                    "offset": 7,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "effectLevel": {
+                    "offset": 8,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "directMix": {
+                    "offset": 9,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "springSensitivity": {
+                    "offset": 10,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        }
+    }
+}

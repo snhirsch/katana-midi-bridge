@@ -1,0 +1,1334 @@
+{
+    "class": {
+        "dataType": "enum",
+        "values": [0, 1, 2, 3, 4, 6, 7, 9, 10, 12, 14, 15, 16, 18, 19, 20, 21, 22, 23,
+                   25, 26, 27, 28, 29, 31],
+        "display": ["T-Wah",
+                    "AutoWah",
+                    "PedalWah",
+                    "Comp",
+                    "Limiter",
+                    "GraphicEQ",
+                    "ParametricEQ",
+                    "GuitarSim",
+                    "SlowGear",
+                    "WaveSynth",
+                    "Octave",
+                    "PitchShifter",
+                    "Harmonist",
+                    "ACProcessor",
+                    "Phaser",
+                    "Flanger",
+                    "Tremolo",
+                    "Rotary",
+                    "Uni-V",
+                    "Slicer",
+                    "Vibrato",
+                    "RingMod",
+                    "Humanizer",
+                    "Chorus",
+                    "ACGuitarSim"]
+    },
+
+    "parameters": {
+        "global": {
+            "length": 2,
+            "parameters": {
+                "onOff": {
+                    "offset": 0,
+                    "dataType": "boolean",
+                    "values": [0, 1],
+                    "display": ["Off", "On"]
+                },
+                "select": {
+                    "offset": 1,
+                    "tableRef": "class"
+                }
+            }
+        },
+
+        "T-Wah": {
+            "length": 19,
+            "parameters": {
+                "polarity": {
+                    "offset": 0,
+                    "dataType": "enum",
+                    "values": [0, 1],
+                    "display": ["Down", "Up"]
+                },
+                "directMix": {
+                    "offset": 1,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "mode": {
+                    "offset": 12, 
+                    "dataType": "enum",
+                    "values": [0, 1],
+                    "display": ["LPF", "HPF"]
+                },
+                "sensitivity": {
+                    "offset": 14,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "frequency": {
+                    "offset": 15,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "peak": {
+                    "offset": 16,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "effectLevel": {
+                    "offset": 18,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "AutoWah": {
+            "length": 7,
+            "parameters": {
+                "mode": {
+                    "offset": 12, 
+                    "dataType": "enum",
+                    "values": [0, 1],
+                    "display": ["LPF", "HPF"]
+                },
+                "frequency": {
+                    "offset": 14,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "peak": {
+                    "offset": 15,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "rate": {
+                    "offset": 16,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "depth": {
+                    "offset": 18,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "directMix": {
+                    "offset": 16,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "effectLevel": {
+                    "offset": 18,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "PedalWah": {
+            "length": 6,
+            "parameters": {
+                "model": {
+                    "offset": 0,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3, 4, 5],
+                    "display": ["CryWah",
+                                "VoxWah",
+                                "FatWah",
+                                "LightWah",
+                                "7StringWah",
+                                "ResoWah"]
+                },
+                "pedalPos": {
+                    "offset": 1,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "pedalMin": {
+                    "offset": 2,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "pedalMax": {
+                    "offset": 3,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "effectLevel": {
+                    "offset": 4,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "directMix": {
+                    "offset": 5,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "Comp": {
+            "length": 5,
+            "parameters": {
+                "model": {
+                    "offset": 0,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3, 4, 5, 6],
+                    "display": ["BossComp",
+                                "Hi-Band",
+                                "Light",
+                                "D-Comp",
+                                "Orange",
+                                "Fat",
+                                "Mild"]
+                },
+                "sustain": {
+                    "offset": 1,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "attack": {
+                    "offset": 2,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "tone": {
+                    "offset": 3,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 50, 100],
+                    "displayValues": [-50, 0, 50]
+                },
+                "level": {
+                    "offset": 4,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "Limiter": {
+            "length": 6,
+            "parameters": {
+                "model": {
+                    "offset": 0,
+                    "dataType": "enum",
+                    "values": [0, 1, 2],
+                    "display": ["BossLimiter", "Rack160D", "VTGRackU"]
+                },
+                "attack": {
+                    "offset": 1,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "threshold": {
+                    "offset": 2,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "ratio": {
+                    "offset": 3,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+                    "display": ["1:1",
+                                "1,2:1",
+                                "1.4:1",
+                                "1.6:1",
+                                "1.8:1",
+                                "2:1",
+                                "2.3:1",
+                                "2.6:1",
+                                "3:1",
+                                "3.5:1",
+                                "4:1",
+                                "5:1",
+                                "6:1",
+                                "8:1",
+                                "10:1",
+                                "12:1",
+                                "20:1",
+                                "INF:1"]
+                },
+                "release": {
+                    "offset": 4,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "level": {
+                    "offset": 5,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "GraphicEQ": {
+            "length": 11,
+            "parameters": {
+                "31Hz": {
+                    "offset": 0,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 20, 40],
+                    "displayValues": [-20, 0, 20]
+                },
+                "62Hz": {
+                    "offset": 1,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 20, 40],
+                    "displayValues": [-20, 0, 20]
+                },
+                "125Hz": {
+                    "offset": 2,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 20, 40],
+                    "displayValues": [-20, 0, 20]
+                },
+                "250Hz": {
+                    "offset": 3,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 20, 40],
+                    "displayValues": [-20, 0, 20]
+                },
+                "500Hz": {
+                    "offset": 4,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 20, 40],
+                    "displayValues": [-20, 0, 20]
+                },
+                "1kHz": {
+                    "offset": 5,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 20, 40],
+                    "displayValues": [-20, 0, 20]
+                },
+                "2kHz": {
+                    "offset": 6,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 20, 40],
+                    "displayValues": [-20, 0, 20]
+                },
+                "4kHz": {
+                    "offset": 7,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 20, 40],
+                    "displayValues": [-20, 0, 20]
+                },
+                "8kHz": {
+                    "offset": 8,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 20, 40],
+                    "displayValues": [-20, 0, 20]
+                },
+                "16kHz": {
+                    "offset": 9,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 20, 40],
+                    "displayValues": [-20, 0, 20]
+                },
+                "level": {
+                    "offset": 10,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 20, 40],
+                    "displayValues": [-20, 0, 20]
+                }
+            }
+        },
+
+        "ParametricEQ": {
+            "length": 11,
+            "parameters": {
+                "lowCut": {
+                    "offset": 0,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                               16, 17],
+                    "display": ["Flat", "20Hz", "25Hz", "31.5Hz", "40Hz", "50Hz", "63Hz", "80Hz",
+                                "100Hz", "125Hz", "160Hz", "200Hz", "250Hz", "315Hz", "400Hz",
+                                "500Hz", "630Hz", "800Hz"]
+                },
+                "lowGain": {
+                    "offset": 1,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 20, 40],
+                    "displayValues": [-20, 0, 20]
+                },
+                "lowMidFreq": {
+                    "offset": 2,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3, 4, 5, 6, 7, 8,
+                               9, 10, 11, 12, 13, 14, 15, 16,
+                               17, 18, 19, 20, 21, 22, 23, 24,
+                               25, 26, 27],
+                    "display": ["20", "25", "31.5", "40", "50", "63", "80", "100",
+                                "125", "160", "200", "250", "315", "400", "500", "630", "800",
+                                "1k", "1k25", "1k6", "2k", "2k5", "3k15", "4k", "5k",
+                                "6k30", "8k", "10k"]
+                },
+                "lowMidQ": {
+                    "offset": 3,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3, 4, 5],
+                    "display": ["0.5", "1", "2", "4", "8", "16"]
+                },
+                "lowMidGain": {
+                    "offset": 4,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 20, 40],
+                    "displayValues": [-20, 0, 20]
+                },
+                "highMidFreq": {
+                    "offset": 5,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3, 4, 5, 6, 7, 8,
+                               9, 10, 11, 12, 13, 14, 15, 16,
+                               17, 18, 19, 20, 21, 22, 23, 24,
+                               25, 26, 27],
+                    "display": ["20", "25", "31.5", "40", "50", "63", "80", "100",
+                                "125", "160", "200", "250", "315", "400", "500", "630", "800",
+                                "1k", "1k25", "1k6", "2k", "2k5", "3k15", "4k", "5k",
+                                "6k30", "8k", "10k"]
+                },
+                "highMidQ": {
+                    "offset": 6,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3, 4, 5],
+                    "display": ["0.5", "1", "2", "4", "8", "16"]
+                },
+                "highMidGain": {
+                    "offset": 7,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 20, 40],
+                    "displayValues": [-20, 0, 20]
+                },
+                "highGain": {
+                    "offset": 8,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 20, 40],
+                    "displayValues": [-20, 0, 20]
+                },
+                "highCut": {
+                    "offset": 9,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+                    "display": ["630Hz", "800Hz", "1kHz", "1k25Hz", "1k6Hz", "2kHz",
+                                "2k5Hz", "3k15Hz", "4kHz", "5kHz", "6k3Hz", "8kHz",
+                                "10kHz", "12k5Hz", "Flat"]
+                },
+                "level": {
+                    "offset": 10,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 20, 40],
+                    "displayValues": [-20, 0, 20]
+                }
+            }
+        },
+
+        "GuitarSim": {
+            "length": 5,
+            "parameters": {
+                "type": {
+                    "offset": 0,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3, 4, 5, 6, 7],
+                    "display": ["S->H", "H->S", "H->HF", "S->Hollow",
+                                "H->Hollow", "S->AC", "H->AC", "P->AC"]
+                },
+                "low": {
+                    "offset": 1,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 50, 100],
+                    "displayValues": [-50, 0, 50]
+                },
+                "high": {
+                    "offset": 2,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 50, 100],
+                    "displayValues": [-50, 0, 50]
+                },
+                "level": {
+                    "offset": 3,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "body": {
+                    "offset": 4,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "SlowGear": {
+            "length": 3,
+            "parameters": {
+                "sensitivity": {
+                    "offset": 0,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "riseTime": {
+                    "offset": 1,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "level": {
+                    "offset": 2,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "WaveSynth": {
+            "length": 8,
+            "parameters": {
+                "shape": {
+                    "offset": 0,
+                    "dataType": "enum",
+                    "values": [0, 1],
+                    "display": ["Saw", "Square"]
+                },
+                "cutoff": {
+                    "offset": 1,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "resonance": {
+                    "offset": 2,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "filterSensitivity": {
+                    "offset": 3,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "filterDecay": {
+                    "offset": 4,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "filterDepth": {
+                    "offset": 5,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "synthLevel": {
+                    "offset": 6,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "directMix": {
+                    "offset": 7,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "Octave": {
+            "length": 3,
+            "parameters": {
+                "range": {
+                    "offset": 0,
+                    "dataType": "enum",
+                    "values": [0, 1, 2],
+                    "display": ["Range1", "Range2", "Range3", "Range4"]
+                },
+                "effectLevel": {
+                    "offset": 1,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "directMix": {
+                    "offset": 2,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "PitchShifter": {
+            "length": 15,
+            "parameters": {
+                "type": {
+                    "offset": 0,
+                    "dataType": "enum",
+                    "values": [0, 1],
+                    "display": ["1Voice", "2Voice"]
+                },
+                "ps1Mode": {
+                    "offset": 1,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3],
+                    "display": ["Fast", "Medium", "Slow", "Mono"]
+                },
+                "ps1Pitch": {
+                    "offset": 2,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayValues": [-24, 0, 24]
+                },
+                "ps1Fine": {
+                    "offset": 3,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 32, 64],
+                    "displayValues": [-50, 0, 50]
+                },
+                "ps1PreDelay": {
+                    "offset": 4,
+                    "dataType": "wordRange",
+                    "values": [0, 300]
+                },
+                "ps1Level": {
+                    "offset": 6,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "ps2Mode": {
+                    "offset": 7,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3],
+                    "display": ["Fast", "Medium", "Slow", "Mono"]
+                },
+                "ps2Pitch": {
+                    "offset": 8,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayValues": [-24, 0, 24]
+                },
+                "ps2Fine": {
+                    "offset": 9,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 32, 64],
+                    "displayValues": [-50, 0, 50]
+                },
+                "ps2PreDelay": {
+                    "offset": 10,
+                    "dataType": "wordRange",
+                    "values": [0, 300]
+                },
+                "ps2Level": {
+                    "offset": 12,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "ps1Feedback": {
+                    "offset": 13,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "directMix": {
+                    "offset": 14,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "Harmonist": {
+            "length": 35,
+            "parameters": {
+                "type": {
+                    "offset": 0,
+                    "dataType": "enum",
+                    "values": [0, 1],
+                    "display": ["1Voice", "2Voice"]
+                },
+                "hr1Harmony": {
+                    "offset": 1,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                               16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+                    "display": ["-2oct", "-14th", "-13th", "-12th", "-11th", "-10th", "-9th",
+                                "-1oct", "-7th", "-6th", "-5th", "-4th", "-3rd", "-2nd",
+                                "Unison", "+2nd", "+3rd", "+4th", "+5th", "+6th", "+7th",
+                                "+1oct", "+9th", "+10th", "+11th", "+12th", "+13th", "+14th",
+                                "+2oct", "User"]
+                },
+                "hr1PreDelay": {
+                    "offset": 2,
+                    "dataType": "wordRange",
+                    "values": [0, 300]
+                },
+                "hr1Level": {
+                    "offset": 4,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "hr2Harmony": {
+                    "offset": 5,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                               16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+                    "display": ["-2oct", "-14th", "-13th", "-12th", "-11th", "-10th", "-9th",
+                                "-1oct", "-7th", "-6th", "-5th", "-4th", "-3rd", "-2nd",
+                                "Unison", "+2nd", "+3rd", "+4th", "+5th", "+6th", "+7th",
+                                "+1oct", "+9th", "+10th", "+11th", "+12th", "+13th", "+14th",
+                                "+2oct", "User"]
+                },
+                "hr2PreDelay": {
+                    "offset": 6,
+                    "dataType": "wordRange",
+                    "values": [0, 300]
+                },
+                "hr2Level": {
+                    "offset": 8,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "hr1Feedback": {
+                    "offset": 9,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "directMix": {
+                    "offset": 10,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "hr1C": {
+                    "offset": 11,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr1Db": {
+                    "offset": 12,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr1D": {
+                    "offset": 13,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr1Eb": {
+                    "offset": 14,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr1E": {
+                    "offset": 15,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr1F": {
+                    "offset": 16,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr1F#": {
+                    "offset": 17,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr1G": {
+                    "offset": 18,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr1Ab": {
+                    "offset": 19,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr1A": {
+                    "offset": 20,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr1Bb": {
+                    "offset": 21,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr1B": {
+                    "offset": 22,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr2C": {
+                    "offset": 23,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr2Db": {
+                    "offset": 24,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr2D": {
+                    "offset": 25,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr2Eb": {
+                    "offset": 26,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr2E": {
+                    "offset": 27,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr2F": {
+                    "offset": 28,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr2F#": {
+                    "offset": 29,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr2G": {
+                    "offset": 30,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr2Ab": {
+                    "offset": 31,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr2A": {
+                    "offset": 32,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr2Bb": {
+                    "offset": 33,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                },
+                "hr2B": {
+                    "offset": 34,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 24, 48],
+                    "displayRange": [-24, 0, 24]
+                }
+            }
+        },
+
+        "ACProcessor": {
+            "length": 7,
+            "parameters": {
+                "mode": {
+                    "offset": 0,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3],
+                    "display": ["Small", "Medium", "Bright", "Power"]
+                },
+                "bass": {
+                    "offset": 1,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 50, 100],
+                    "displayValues": [-50, 0, 50]
+                },
+                "middle": {
+                    "offset": 2,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 50, 100],
+                    "displayValues": [-50, 0, 50]
+                },
+                "middleFrequency": {
+                    "offset": 3,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                               16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27],
+                    "display": ["20", "25", "31.5", "40", "50", "63", "80", "100",
+                                "125", "160", "200", "250", "315", "400", "500", "630", "800",
+                                "1k", "1k25", "1k6", "2k", "2k5", "3k15", "4k", "5k",
+                                "6k30", "8k", "10k"]
+                },
+                "treble": {
+                    "offset": 4,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 50, 100],
+                    "displayValues": [-50, 0, 50]
+                },
+                "presence": {
+                    "offset": 5,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 50, 100],
+                    "displayValues": [-50, 0, 50]
+                },
+                "level": {
+                    "offset": 6,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "Phaser": {
+            "length": 8,
+            "parameters": {
+                "mode": {
+                    "offset": 0,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3],
+                    "display": ["4Stage", "8Stage", "12Stage", "BiPhase"]
+                },
+                "rate": {
+                    "offset": 1,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "depth": {
+                    "offset": 2,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "manual": {
+                    "offset": 3,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "resonance": {
+                    "offset": 4,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "stepRate": {
+                    "offset": 5,
+                    "dataType": "complexRange",
+                    "values": [0, [1, 101]],
+                    "display": ["Off", [0, 100]]
+                },
+                "effectLevel": {
+                    "offset": 6,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "directMix": {
+                    "offset": 7,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "Flanger": {
+            "length": 8,
+            "parameters": {
+                "rate": {
+                    "offset": 0,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "depth": {
+                    "offset": 1,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "manual": {
+                    "offset": 2,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "resonance": {
+                    "offset": 3,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "lowCut": {
+                    "offset": 5,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                    "display": ["Flat", "55Hz", "110Hz", "165Hz", "200Hz", "280Hz",
+                                "340Hz", "400Hz", "500Hz", "630Hz", "800Hz"]
+                },
+                "effectLevel": {
+                    "offset": 6,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "directMix": {
+                    "offset": 7,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "Tremolo": {
+            "length": 4,
+            "parameters": {
+                "waveShape": {
+                    "offset": 0,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "rate": {
+                    "offset": 1,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "depth": {
+                    "offset": 2,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "level": {
+                    "offset": 3,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "Rotary": {
+            "length": 5,
+            "parameters": {
+                "rate": {
+                    "offset": 0,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "depth": {
+                    "offset": 3,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "level": {
+                    "offset": 4,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "Uni-V": {
+            "length": 3,
+            "parameters": {
+                "rate": {
+                    "offset": 0,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "depth": {
+                    "offset": 1,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "level": {
+                    "offset": 2,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "Slicer": {
+            "length": 5,
+            "parameters": {
+                "pattern": {
+                    "offset": 0,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                               16, 17, 18, 19],
+                    "display": ["P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8",
+                                "P9", "P10", "P11", "P12", "P13", "P14", "P15", "P16",
+                                "P17", "P18", "P19", "P20"]
+                },
+                "rate": {
+                    "offset": 1,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "triggerSensitivity": {
+                    "offset": 2,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "effectLevel": {
+                    "offset": 3,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "directMix": {
+                    "offset": 4,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "Vibrato": {
+            "length": 5,
+            "parameters": {
+                "rate": {
+                    "offset": 0,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "depth": {
+                    "offset": 1,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "level": {
+                    "offset": 4,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "RingMod": {
+            "length": 4,
+            "parameters": {
+                "mode": {
+                    "offset": 0,
+                    "dataType": "enum",
+                    "values": [0, 1],
+                    "display": ["Normal", "Intelligent"]
+                },
+                "frequency": {
+                    "offset": 1,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "effectLevel": {
+                    "offset": 2,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "directMix": {
+                    "offset": 3,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "Humanizer": {
+            "length": 8,
+            "parameters": {
+                "mode": {
+                    "offset": 0,
+                    "dataType": "enum",
+                    "values": [0, 1],
+                    "display": ["Picking", "Auto"]
+                },
+                "vowel1": {
+                    "offset": 1,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3, 4],
+                    "display": ["a", "e", "i", "o", "u"]
+                },
+                "vowel2": {
+                    "offset": 2,
+                    "dataType": "enum",
+                    "values": [0, 1, 2, 3, 4],
+                    "display": ["a", "e", "i", "o", "u"]
+                },
+                "sensitivity": {
+                    "offset": 3,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "rate": {
+                    "offset": 4,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "depth": {
+                    "offset": 5,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "manual": {
+                    "offset": 6,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "level": {
+                    "offset": 7,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "Chorus": {
+            "length": 16,
+            "parameters": {
+                "lowRate": {
+                    "offset": 0,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "lowDepth": {
+                    "offset": 1,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "lowPreDelay": {
+                    "offset": 2,
+                    "dataType": "byteRange",
+                    "values": [0, 80],
+                    "display": [0, 40]
+                },
+                "lowLevel": {
+                    "offset": 3,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "highRate": {
+                    "offset": 4,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "highDepth": {
+                    "offset": 5,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "highLevel": {
+                    "offset": 7,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "directMix": {
+                    "offset": 15,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        },
+
+        "ACGuitarSim": {
+            "length": 5,
+            "parameters": {
+                "high": {
+                    "offset": 0,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 50, 100],
+                    "display": [-50, 0, 50]
+                },
+                "body": {
+                    "offset": 1,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                },
+                "low": {
+                    "offset": 2,
+                    "dataType": "centeredByteRange",
+                    "values": [0, 50, 100],
+                    "display": [-50, 0, 50]
+                },
+                "level": {
+                    "offset": 4,
+                    "dataType": "byteRange",
+                    "values": [0, 100]
+                }
+            }
+        }
+    },
+
+    "baseAddr": {
+        "mod": {
+            "global":       [96, 0, 1, 64],
+            "T-Wah":        [96, 0, 1, 66],
+            "AutoWah":      [96, 0, 1, 84],
+            "PedalWah":     [96, 0, 1, 92],
+            "Comp":         [96, 0, 1, 99],
+            "Limiter":      [96, 0, 1, 105],
+            "GraphicEQ":    [96, 0, 1, 112],
+            "ParametricEQ": [96, 0, 1, 124],
+            "GuitarSim":    [96, 0, 2, 14],
+            "SlowGear":     [96, 0, 2, 20],
+            "WaveSynth":    [96, 0, 2, 32],
+            "Octave":       [96, 0, 2, 49],
+            "PitchShifter": [96, 0, 2, 53],
+            "Harmonist":    [96, 0, 2, 69],
+            "ACProcessor":  [96, 0, 2, 109],
+            "Phaser":       [96, 0, 2, 117],
+            "Flanger":      [96, 0, 2, 126],
+            "Tremolo":      [96, 0, 3, 7],
+            "Rotary":       [96, 0, 3, 14],
+            "Uni-V":        [96, 0, 3, 20],
+            "Slicer":       [96, 0, 3, 31],
+            "Vibrato":      [96, 0, 3, 37],
+            "RingMod":      [96, 0, 3, 43],
+            "Humanizer":    [96, 0, 3, 48],
+            "Chorus":       [96, 0, 3, 58],
+            "ACGuitarSim":  [96, 0, 16, 16]
+        },
+
+        "fx": {
+            "global":       [96, 0, 3, 76],
+            "T-Wah":        [96, 0, 3, 88],
+            "AutoWah":      [96, 0, 3, 96],
+            "PedalWah":     [96, 0, 3, 104],
+            "Comp":         [96, 0, 3, 111],
+            "Limiter":      [96, 0, 3, 117],
+            "GraphicEQ":    [96, 0, 3, 124],
+            "ParametricEQ": [96, 0, 4, 8],
+            "GuitarSim":    [96, 0, 4, 26],
+            "SlowGear":     [96, 0, 4, 32],
+            "WaveSynth":    [96, 0, 4, 44],
+            "Octave":       [96, 0, 4, 61],
+            "PitchShifter": [96, 0, 4, 65],
+            "Harmonist":    [96, 0, 4, 81],
+            "ACProcessor":  [96, 0, 4, 121],
+            "Phaser":       [96, 0, 5, 1],
+            "Flanger":      [96, 0, 5, 10],
+            "Tremolo":      [96, 0, 5, 19],
+            "Rotary":       [96, 0, 5, 26],
+            "Uni-V":        [96, 0, 5, 32],
+            "Slicer":       [96, 0, 5, 43],
+            "Vibrato":      [96, 0, 5, 49],
+            "RingMod":      [96, 0, 5, 55],
+            "Humanizer":    [96, 0, 5, 60],
+            "Chorus":       [96, 0, 5, 70],
+            "ACGuitarSim":  [96, 0, 16, 31]
+        }
+    },
+        
+    "masterKey": {
+        "baseAddr": [96, 0, 7, 24],
+        "length": 1,
+        "parameters": {
+            "key": {
+                "offset": 0,
+                "dataType": "enum",
+                "values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+                "display": ["C(Am)", "Db(Ebm)", "D(Bm)", "Eb(Cm)", "E(C#m)", "F(Dm)",
+                            "F#(D#m)", "G(Em)", "Ab(Fm)", "A(F#m)", "Bb(Gm)", "B(G#m)"]
+            }
+        }
+    }
+}

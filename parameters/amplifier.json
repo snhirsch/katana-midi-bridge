@@ -1,0 +1,141 @@
+{
+    "effectsLoop": {
+        "baseAddr": [0, 0, 4, 0],
+        "length": 4,
+        "parameters": {
+            "loopActive": {
+                "offset": 0,
+                "dataType": "boolean",
+                "values": [0, 1],
+                "display": ["Off", "On"]
+            },
+            "routingScheme": {
+                "offset": 1,
+                "dataType": "enum",
+                "values": [0, 1],
+                "display": ["Series", "Parallel"]
+            },
+            "sendLevel": {
+                "offset": 2,
+                "dataType": "byteRange",
+                "values": [0, 100],
+                "display": [0, 200]
+            },
+            "returnLevel": {
+                "offset": 3,
+                "dataType": "byteRange",
+                "values": [0, 100],
+                "display": [0, 200]
+            }
+        }
+    },
+
+    "frontPanel": {
+        "baseAddr": [0, 0, 4, 33],
+        "length": 10,
+        "parameters": {
+            "type": {
+                "offset": 0,
+                "dataType": "enum",
+                "values": [0, 1, 2, 3, 4],
+                "display": ["Acoustic","Clean","Crunch","Lead","Brown"]
+            },
+            "gain": {
+                "offset": 1,
+                "dataType": "byteRange",
+                "values": [0, 100]
+            },
+            "volume": {
+                "offset": 2,
+                "dataType": "byteRange",
+                "values": [0, 100]
+            },
+            "bass": {
+                "offset": 3,
+                "dataType": "byteRange",
+                "values": [0, 100]
+            },
+            "mid": {
+                "offset": 4,
+                "dataType": "byteRange",
+                "values": [0, 100]
+            },
+            "treble": {
+                "offset": 5,
+                "dataType": "byteRange",
+                "values": [0, 100]
+            },
+            "presence": {
+                "offset": 6,
+                "dataType": "byteRange",
+                "values": [0, 100]
+            },
+            "booster": {
+                "offset": 7,
+                "dataType": "complexRange",
+                "values": [0, [1, 51]],
+                "display": ["Off", [0, 50]]
+            },
+            "mod": {
+                "offset": 7,
+                "dataType": "complexRange",
+                "values": [52, [53, 103]],
+                "display": ["Off", [0, 50]]
+            },
+            "delay": {
+                "offset": 8,
+                "dataType": "complexRange",
+                "values": [0, [1, 51]],
+                "display": ["Off", [0, 50]]
+            },
+            "efx": {
+                "offset": 8,
+                "dataType": "complexRange",
+                "values": [52, [53, 103]],
+                "display": ["Off", [0, 50]]
+            },
+            "reverb": {
+                "offset": 9,
+                "dataType": "complexRange",
+                "values": [0, [1, 101]],
+                "display": ["Off", [0, 100]]
+            }
+        }
+    },
+
+    "noiseGate": {
+        "baseAddr": [96, 0, 6, 99],
+        "length": 3,
+        "parameters": {
+            "gateActive": {
+                "offset": 0,
+                "dataType": "boolean",
+                "values": [0, 1],
+                "display": ["Off", "On"]
+            },
+            "threshold": {
+                "offset": 1,
+                "dataType": "byteRange",
+                "values": [0, 100]
+            },
+            "release": {
+                "offset": 2,
+                "dataType": "byteRange",
+                "values": [0, 100]
+            }
+        }
+    },
+
+    "chain": {
+        "baseAddr": [96, 0, 18, 0],
+        "length": 1,
+        "parameters": {
+            "prePost": {
+                "offset": 0,
+                "dataType": "enum",
+                "values": [0, 1, 2],
+                "display": ["One", "Two", "Three"]
+            }
+        }
+    }
+}
