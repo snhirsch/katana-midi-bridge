@@ -15,13 +15,13 @@ class PanelPreset:
     # Track object state
     Start, SawId, SawCh, SawAddr, SawData, Done = range( 6 )
 
-    # Static generator to create PanelPreset objects by parsing a
+    # Static generator to create multiple PanelPreset objects by parsing a
     # text file input stream
     #
     @staticmethod
     def get_from_file( infh ):
         lineNum = 0
-        obj = PanelPreset()
+        obj = PanelPreset(None, None, None)
         for line in infh:
             lineNum += 1
             line = line.strip()
@@ -34,6 +34,7 @@ class PanelPreset:
                 print( "Parse error at line %d. Expected more than one token." % lineNum )
                 sys.exit( 1 )
 
+            # First token in input line names the handler.  
             handler = getattr( obj, type, None )
             if handler == None:
                 print( "Parse error at line %d. Line type %s unknown" % (lineNum, type) )
@@ -44,14 +45,17 @@ class PanelPreset:
             if obj.state == obj.Done:
                 obj.volume_midi_scale = obj.get_data(PANEL_STATE_ADDR, 18, 1)[0] / 128
                 yield obj
-                obj = PanelPreset()
+                obj = PanelPreset(None, None, None)
                 
         if obj.state != obj.Start:
             print( "Parse error at line %d." % lineNum )
 
+    # Static factory method to create a single PanelPreset object by reading
+    # current amplifier state
+    #
     @staticmethod
-    def read_from_amp( katana, preset_id ):
-        obj = PanelPreset()
+    def read_from_amp( katana, preset_id, colorObj, simpleObj, complexObj ):
+        obj = PanelPreset( colorObj, simpleObj, complexObj )
         obj.state = obj.Done
         obj.id = preset_id
 
@@ -61,8 +65,10 @@ class PanelPreset:
 
         # Enter edit mode
         katana.send_sysex_data( EDIT_ON )
-        katana.send_sysex_data( EDIT_ON )
+        # Must give it settling time
+        sleep( 0.1 )
         dummy, preset = katana.query_sysex_data( CURRENT_PRESET_ADDR, CURRENT_PRESET_LEN )
+        
         # Leave edit mode
         katana.send_sysex_data( EDIT_OFF )
         obj.ch = preset[0][1]
@@ -72,30 +78,53 @@ class PanelPreset:
         obj.ch -= 1
         if obj.ch < 0: obj.ch = 4
 
+        # Read active DSP deep parms
+        for rec in colorObj.read_knobs( katana ):
+            # Get the appropriate group handler
+            handler = obj.dsp[ rec['group'] ]
+            # Lookup parm blocks
+            coords = handler.get_coords( rec['category'], rec['type'] )
+            # And read from amp
+            for block in coords['blocks']:
+                addr, length = block
+                addr, data = katana.query_sysex_data( addr, length )
+                obj.addr.append( addr[0] )
+                obj.data.append( data[0] )
+                obj.memo.append( "Category: %s, Type: %s" % (rec['category'], coords['name']) )
+        
         # Read color assign and state
         addr, data = katana.query_sysex_data( COLOR_ASSIGN_ADDR, COLOR_ASSIGN_LEN )
         obj.addr.append( addr[0] )
         obj.data.append( data[0] )
-
+        obj.memo.append( "Color Assign" )
+        
         # Read amplifier panel block
         addr, data = katana.query_sysex_data( PANEL_STATE_ADDR, PANEL_STATE_LEN )
         obj.addr.append( addr[0] )
         obj.data.append( data[0] )
-
+        obj.memo.append( "Amp Panel" )
+        
         # Keep this around so we can properly scale controller
         # pedal input
         obj.volume_midi_scale = data[0][18] / 128
         
         return obj
 
-    def __init__( self ):
+    def __init__( self, colorObj, simpleObj, complexObj ):
         self.state = self.Start
         self.id = -1
         self.ch = -1
         self.addr = []
         self.data = []
+        self.memo = []
         self.by_addr = {}
         self.curr_address = None
+        self.colorObj = colorObj
+        self.dsp = {}
+        self.dsp['simple'] = simpleObj
+        self.dsp['complex'] = complexObj
+
+    # State machine handlers for parsing data file:
         
     def _preset( self, value, lineNum ):
         if self.state != self.Start:
@@ -166,17 +195,21 @@ class PanelPreset:
 
         self.state = self.Done
 
+    # Send current data set to amplifier
     def transmit( self, katanaObj ):
-        katanaObj.send_pc( self.ch )
-        sleep( 0.05 )
+        # katanaObj.send_pc( self.ch )
+        # sleep( 0.05 )
 
         for addr, data in zip( self.addr, self.data ):
             katanaObj.send_sysex_data( addr, data )
 
+    # Print current data set to passed filehandle.
     def serialize( self, outfh ):
         outfh.write( "_preset %d\n" % self.id )
         outfh.write( "_ch %d\n" % self.ch )
-        for addr, data in zip( self.addr, self.data ):
+        for memo, addr, data in zip( self.memo, self.addr, self.data ):
+            outfh.write( "# %s\n" % memo )
+            
             hexstr = ' '.join( "%02x" % i for i in addr )
             outfh.write( "_addr %s\n" % hexstr )
 
@@ -192,12 +225,17 @@ class PanelPreset:
             controller_value += 1
         return int( controller_value * self.volume_midi_scale )
 
+    # Full range scaling when using built-in preset.
+    # FIXME: No reason why we cannot read actual volume from
+    # built-in.
     @staticmethod
     def scale_volume_to_amp_default( controller_value ):
         if controller_value > 0:
             controller_value += 1
         return int( controller_value * (100/128) ) 
-        
+
+    # Return array of bytes from current preset data. Call with
+    # base address, offset and count.
     def get_data( self, address, offset, count ):
         if address in self.by_addr:
             bytes = self.by_addr[ address ]

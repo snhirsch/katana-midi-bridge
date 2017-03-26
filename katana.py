@@ -36,7 +36,8 @@ class Katana:
         # the current object into a closure
         self.inport.callback = lambda msg: self._post( msg )
 
-    # Drain incoming USB buffer
+    # Drain incoming USB buffer by doing polled reads over
+    # five seconds
     def _clear_input( self ):
         # Force off edit mode
         self.send_sysex_data( EDIT_OFF )
@@ -47,7 +48,7 @@ class Katana:
             if now - start > 5:
                 break
 
-    # Called by rtmidi in a separate thread
+    # Called by rtmidi in a separate thread to absorb bulk response
     def _post( self, msg ):
         if msg.type != 'sysex':
             syslog.syslog( "Err: Saw msg type: " + msg.type )
@@ -63,6 +64,8 @@ class Katana:
         self.receive_cond.notify()
         self.receive_cond.release()
 
+    # Concatenate caller's prefix and message, add checksum and send
+    # as sysex message. Handles both store and query commands.
     def _send( self, prefix, msg ):
         # print( "DEBUG: msg = ", msg )
         # Calculate Roland cksum on msg only
@@ -78,12 +81,14 @@ class Katana:
         self.sysex.data = data
         self.outport.send( self.sysex )
 
-    def send_sysex_data( self, addr, len=None ):
-        if len == None:
+    # Convenience method for store commands. Takes address and
+    # optional data payload.
+    def send_sysex_data( self, addr, data=None ):
+        if data == None:
             msg = addr
         else:
             msg = list( addr )
-            msg.extend( len )
+            msg.extend( data )
 
         self._send( SEND_PREFIX, msg )
 
@@ -103,13 +108,29 @@ class Katana:
         sleep( timeout )
         return self.addr, self.data
 
+    # Encode scalar length into 4-byte sysex value
+    @staticmethod
+    def encode_scalar( len ):
+        result = [0x00, 0x00, 0x00, 0x00]
+        result[3] = len % 0x80
+        result[2] = (len // 0x80) % 0x80
+        result[1] = (len // 0x4000) % 0x80
+        result[0] = (len // 0x200000) % 0x80
+        return result
+
+    @staticmethod
+    def decode_array( ary ):
+        return (ary[0] * 0x200000) + (ary[1] * 0x4000) + (ary[2] * 0x80) + ary[3]
+    
+    # Request sysex data by passing start address and offset
+    # limit.
     def query_sysex_data( self, addr, len ):
         self.receive_cond.acquire()
 
         self.data = []
         self.addr = []
         msg = list( addr )
-        msg.extend( len )
+        msg.extend( Katana.encode_scalar(len) )
         self._send( QUERY_PREFIX, msg )
 
         result = self.receive_cond.wait(5)
@@ -120,6 +141,23 @@ class Katana:
 
         return self.addr, self.data
 
+    # Bias 4-byte sysex array by scalar value
+    @staticmethod
+    def effective_addr( base, offset ):
+        base_scalar = Katana.decode_array( base )
+        return Katana.encode_scalar( base_scalar + offset )
+        
+    # Request a single byte
+    def query_sysex_byte( self, addr, offset=None ):
+        if offset == None:
+            eff = addr
+        else:
+            eff = Katana.effective_addr( addr, offset )
+
+        (dummy, data) = self.query_sysex_data( eff, 1 )
+        return data[0][0]
+        
+    # Experimental method for program change
     def send_fast_pc( self, program ):
         # Normalize to behave like PC
         if program == 4: 
@@ -129,27 +167,31 @@ class Katana:
 
         # Enter edit mode
         self.send_sysex_data( EDIT_ON )
+        sleep( 0.1 )
         self.send_sysex_data( CURRENT_PRESET_ADDR, (0x00,program) )
         # Leave edit mode
         self.send_sysex_data( EDIT_OFF )
 
+    # Send program change
     def send_pc( self, program ):
         self.pc.program = program
         self.outport.send( self.pc )
 
+    # Send control change
     def send_cc( self, control, value ):
         self.cc.control = control
         self.cc.value = value
         self.outport.send( self.cc )
 
+    # Convenience method to set amplifier volume
     def volume( self, value ):
         self.send_sysex_data( AMP_VOLUME_ADDR, (value,) )
 
     # Cycle amp-type LEDs in a distinctive pattern
     def signal( self ):
         # Get type, gain, volume
-        type_addr, curr_type = self.query_sysex_data( AMP_TYPE_ADDR, (0x00,0x00,0x00,0x01) )
-        vol_addr, curr_vol = self.query_sysex_data( AMP_VOLUME_ADDR, (0x00,0x00,0x00,0x01) )
+        type_addr, curr_type = self.query_sysex_data( AMP_TYPE_ADDR, 1 )
+        vol_addr, curr_vol = self.query_sysex_data( AMP_VOLUME_ADDR, 1 )
 
         # Volume to zero
         self.send_sysex_data( vol_addr[0], (0x00,) )
@@ -164,3 +206,11 @@ class Katana:
 
         self.send_sysex_data( type_addr[0], curr_type[0] )
         self.send_sysex_data( vol_addr[0], curr_vol[0] )
+
+if __name__ == '__main__':
+    for test in (COLOR_ASSIGN_ADDR, PANEL_STATE_ADDR, CURRENT_PRESET_ADDR, AMP_TYPE_ADDR):
+        decode = Katana.decode_array( test )
+        encode = Katana.encode_scalar( decode )
+        test_list = list(test)
+        if test_list != encode:
+            print( "Failed:", test_list, "!=", encode )

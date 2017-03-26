@@ -9,6 +9,9 @@ import math
 
 from panel_preset import PanelPreset
 from katana import Katana
+from color_buttons import ColorButtons
+from simple_dsp import SimpleDSP
+from complex_dsp import ComplexDSP
 
 mido.set_backend('mido.backends.rtmidi')
 
@@ -87,7 +90,7 @@ def save_presets():
 # Capture and persist a new preset (overwrites existing)
 def capture_preset( katana, program ):
     # Read amp into rec using controller PC program value as id
-    rec = PanelPreset.read_from_amp( katana, program )
+    rec = PanelPreset.read_from_amp( katana, program, colorObj, simpleObj, complexObj )
     presets[ rec.id ] = rec
     # Persist to disk
     save_presets()
@@ -135,24 +138,41 @@ if len(args) < 6:
     print( "            \"KATANA:KATANA MIDI 1 20:0\" 1 presetfile.txt\n" )
     sys.exit( 1 )
 
+# Load parameter metadata
+scriptdir = os.environ.get('PYTHONPATH')
+if scriptdir == None:
+    scriptdir = os.path.dirname(os.path.abspath(__file__))
+
+datadir = scriptdir + '/parameters/'
+
+colorObj = ColorButtons( datadir + 'color_assign.json' )
+simpleObj = SimpleDSP( datadir + 'simple_dsp.json' )
+complexObj = ComplexDSP( datadir + 'complex_dsp.json' )
+
+# Controller interface
 interface = args[1]
 
+# Controller MIDI port
 try:
     listen_ch = int( args[2] ) - 1
 except ValueError:
     print( "Arg2 must be numeric!\n" )
     sys.exit( 1 )
 
+# Amp interface
 amp = args[3]
 
+# Amp MIDI port 
 try:
     amp_channel = int( args[4] ) - 1
 except ValueError:
     print( "Arg4 must be numeric!\n" )
     sys.exit( 1 )
 
+# Preset data
 preset_file = args[5]
 
+# Are we testing?
 if len(args) == 7 and args[6] == 'virt':
     virt = True
 else:

@@ -2,7 +2,7 @@ Boss Katana 100 Combo
 MIDI System-Exclusive (sysex) Specification
 Reverse Engineered by Steven Hirsch
 
-v1.6 - 2017-02-12
+v1.7 - 2017-03-23
 
 ==
 
@@ -231,14 +231,10 @@ Return Level (0..Unity..200)
 00 00 04 03 --> 00 .. 32 .. 64
 
 
-[Unknown Addresses] INFORMATIONAL ONLY
+[DSP Knob Status]
 
-Note: When a button-press event is triggered in editor mode,
-      the amp response conditions a pair of addresses in the
-      00 00 04 xx block.
-
-      These messages do not seem necessary to select a color
-      but are documented here for informational purposes.
+Note: These should be considered as read-only addresses
+      for determining DSP knob position and color assign
 
 00 00 04 10 --> cc    Boost/Mod Color
 00 00 04 11 --> cc    Delay/FX Color
@@ -246,6 +242,7 @@ Note: When a button-press event is triggered in editor mode,
 
   Values:
 
+  Off:    00
   Green:  01
   Red:    02
   Yellow: 03
@@ -256,12 +253,16 @@ Note: When a button-press event is triggered in editor mode,
 
   Values:
 
+  Off:      00
   Green A:  01
   Red A:    02
   Yellow A: 03
   Green B:  04 (n/a for Reverb)
   Red B:    05   ""
   Yellow B: 06   ""
+
+
+[Front Panel]
 
 Amp Type
 00 00 04 20 --> xx
@@ -271,9 +272,6 @@ Amp Type
  Crunch:   02
  Lead:     03
  Brown:    04
-
-
-[Front Panel]
 
 Gain (0..100)
 00 00 04 21 --> 00 .. 64

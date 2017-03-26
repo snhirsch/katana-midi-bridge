@@ -2,6 +2,7 @@
 
 BINDIR=/usr/local/bin
 LIBDIR=/usr/local/share/katana
+PARMDIR=$LIBDIR/parameters
 INITDIR=/etc/init.d
 UDEVDIR=/etc/udev/rules.d
 
@@ -24,10 +25,14 @@ cp -f katana_bridge_app $BINDIR
 chmod 0755 $BINDIR/katana_bridge_app
 chown root:root $BINDIR/katana_bridge_app
 
-echo "Copy Python modules to $LIBDIR"
+echo "Copy Python modules and parameter files to $LIBDIR"
 mkdir -p $LIBDIR
 cp -f *.py $LIBDIR
-chown root:root $LIBDIR/*
+
+mkdir -p $PARMDIR
+cp -f ./parameters/*.json $PARMDIR
+
+chown -R root:root $LIBDIR/*
 
 echo "Copy init script to $INITDIR and register"
 
