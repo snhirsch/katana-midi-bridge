@@ -206,7 +206,7 @@ class PanelPreset:
     # Print current data set to passed filehandle.
     def serialize( self, outfh ):
         outfh.write( "_preset %d\n" % self.id )
-        # outfh.write( "_ch %d\n" % self.ch )
+        outfh.write( "_ch %d\n" % self.ch )
         for memo, addr, data in zip( self.memo, self.addr, self.data ):
             outfh.write( "# %s\n" % memo )
             
