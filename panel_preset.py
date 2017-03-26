@@ -63,23 +63,23 @@ class PanelPreset:
         #       remnants from an earlier reply are sitting in the input
         #       buffer.
 
-        # Enter edit mode
-        katana.send_sysex_data( EDIT_ON )
-        # Must give it settling time
-        sleep( 0.1 )
-        dummy, preset = katana.query_sysex_data( CURRENT_PRESET_ADDR, CURRENT_PRESET_LEN )
+        # # Enter edit mode
+        # katana.send_sysex_data( EDIT_ON )
+        # # Must give it settling time
+        # sleep( 0.1 )
+        # dummy, preset = katana.query_sysex_data( CURRENT_PRESET_ADDR, CURRENT_PRESET_LEN )
         
-        # Leave edit mode
-        katana.send_sysex_data( EDIT_OFF )
-        obj.ch = preset[0][1]
+        # # Leave edit mode
+        # katana.send_sysex_data( EDIT_OFF )
+        # obj.ch = preset[0][1]
 
-        # Normalize low-level preset id to the one presented on public
-        # PC implementation
-        obj.ch -= 1
-        if obj.ch < 0: obj.ch = 4
+        # # Normalize low-level preset id to the one presented on public
+        # # PC implementation
+        # obj.ch -= 1
+        # if obj.ch < 0: obj.ch = 4
 
         # Read active DSP deep parms
-        for rec in colorObj.read_knobs( katana ):
+        for rec in colorObj.read_color_assign( katana ):
             # Get the appropriate group handler
             handler = obj.dsp[ rec['group'] ]
             # Lookup parm blocks
@@ -206,7 +206,7 @@ class PanelPreset:
     # Print current data set to passed filehandle.
     def serialize( self, outfh ):
         outfh.write( "_preset %d\n" % self.id )
-        outfh.write( "_ch %d\n" % self.ch )
+        # outfh.write( "_ch %d\n" % self.ch )
         for memo, addr, data in zip( self.memo, self.addr, self.data ):
             outfh.write( "# %s\n" % memo )
             

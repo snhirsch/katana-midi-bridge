@@ -2,7 +2,7 @@
     "colorEnum": {
         "dataType": "enum",
         "values": [0, 1, 2],
-        "display": ["Green", "Red", "Yellow"]
+        "display": ["green", "red", "yellow"]
     },
 
     "colorAssignIndex": {
@@ -86,6 +86,9 @@
 
     "dspKnobs": ["boostMod", "delayFx", "reverb"],
 
+    "dspSimple": ["boost", "delay", "reverb"],
+    "dspComplex": ["mod", "fx"],
+    
     "dspColorStateXlate": ["off", "green", "red", "yellow"],
     
     "dspColorState": {
