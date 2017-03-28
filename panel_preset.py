@@ -43,7 +43,7 @@ class PanelPreset:
                 handler( value, lineNum )
 
             if obj.state == obj.Done:
-                obj.volume_midi_scale = obj.get_data(PANEL_STATE_ADDR, 18, 1)[0] / 128
+                obj.volume_midi_scale = obj.get_data(PANEL_STATE_ADDR, 2, 1)[0] / 128
                 yield obj
                 obj = PanelPreset(None, None, None)
                 
@@ -104,9 +104,15 @@ class PanelPreset:
         obj.data.append( data[0] )
         obj.memo.append( "Amp Panel" )
         
+        # Read noise gate state
+        addr, data = katana.query_sysex_data( NS_ADDR, NS_LEN )
+        obj.addr.append( addr[0] )
+        obj.data.append( data[0] )
+        obj.memo.append( "Noise Gate" )
+        
         # Keep this around so we can properly scale controller
         # pedal input
-        obj.volume_midi_scale = data[0][18] / 128
+        obj.volume_midi_scale = data[0][2] / 128
         
         return obj
 

@@ -142,7 +142,7 @@
         },
 
         "reverb": {
-            "baseAddr": [96, 0, 6, 32],
+            "baseAddr": [96, 0, 6, 16],
             "length": 11,
             "parameters": {
                 "onOff": {
