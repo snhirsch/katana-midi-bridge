@@ -213,15 +213,17 @@ class PanelPreset:
     def serialize( self, outfh ):
         outfh.write( "_preset %d\n" % self.id )
         outfh.write( "_ch %d\n" % self.ch )
-        for memo, addr, data in zip( self.memo, self.addr, self.data ):
-            outfh.write( "# %s\n" % memo )
+        i = 0
+        for addr, data in zip( self.addr, self.data ):
+            if len(self.memo): outfh.write( "# %s\n" % self.memo[i] )
             
             hexstr = ' '.join( "%02x" % i for i in addr )
             outfh.write( "_addr %s\n" % hexstr )
 
             hexstr = ' '.join( "%02x" % i for i in data )
             outfh.write( "_data %s\n" % hexstr )
-
+            i += 1
+            
         outfh.write( "_endPreset %d\n" % self.id )
 
     # Controller input 0..127.  Scale this so it maxes out at the captured
