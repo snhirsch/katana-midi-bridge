@@ -13,7 +13,7 @@ from globals import *
 class PanelPreset:
 
     # Track object state
-    Start, SawId, SawCh, SawAddr, SawData, Done = range( 6 )
+    Start, SawId, SawAddr, SawData, Done = range( 5 )
 
     # Static generator to create multiple PanelPreset objects by parsing a
     # text file input stream
@@ -59,24 +59,14 @@ class PanelPreset:
         obj.state = obj.Done
         obj.id = preset_id
 
+        # Store zero-volume command
+        obj.addr.append( AMP_VOLUME_ADDR )
+        obj.data.append( (0,) )
+        obj.memo.append( "Mute amplfier" )
+        
         # NOTE: This code can hang or blow up with invalid list index if
         #       remnants from an earlier reply are sitting in the input
         #       buffer.
-
-        # # Enter edit mode
-        # katana.send_sysex_data( EDIT_ON )
-        # # Must give it settling time
-        # sleep( 0.1 )
-        # dummy, preset = katana.query_sysex_data( CURRENT_PRESET_ADDR, CURRENT_PRESET_LEN )
-        
-        # # Leave edit mode
-        # katana.send_sysex_data( EDIT_OFF )
-        # obj.ch = preset[0][1]
-
-        # # Normalize low-level preset id to the one presented on public
-        # # PC implementation
-        # obj.ch -= 1
-        # if obj.ch < 0: obj.ch = 4
 
         # Read active DSP deep parms
         for rec in colorObj.read_color_assign( katana ):
@@ -92,17 +82,11 @@ class PanelPreset:
                 obj.data.append( data[0] )
                 obj.memo.append( "Category: %s, Type: %s" % (rec['category'], coords['name']) )
         
-        # Read color assign and state
+        # Read chain, color assign and color button state
         addr, data = katana.query_sysex_data( COLOR_ASSIGN_ADDR, COLOR_ASSIGN_LEN )
         obj.addr.append( addr[0] )
         obj.data.append( data[0] )
         obj.memo.append( "Color Assign" )
-        
-        # Read amplifier panel block
-        addr, data = katana.query_sysex_data( PANEL_STATE_ADDR, PANEL_STATE_LEN )
-        obj.addr.append( addr[0] )
-        obj.data.append( data[0] )
-        obj.memo.append( "Amp Panel" )
         
         # Read noise gate state
         addr, data = katana.query_sysex_data( NS_ADDR, NS_LEN )
@@ -110,16 +94,40 @@ class PanelPreset:
         obj.data.append( data[0] )
         obj.memo.append( "Noise Gate" )
         
+        # Read amplifier panel block
+        addr, data = katana.query_sysex_data( PANEL_STATE_ADDR, PANEL_STATE_LEN )
+        
+        # Create a list so we can modify
+        data_list_0 = list( data[0] )
+        # Grab stored volume setting 
+        volume = data_list_0[2]
+        # Patch in a zero to keep it muted
+        data_list_0[2] = 0
+
+        # Store patched block
+        obj.addr.append( addr[0] )
+        obj.data.append( data_list_0 )
+        obj.memo.append( "Amp Panel" )
+
+        # Store a delay record to prevent "pop" at patch change
+        obj.addr.append( (0xff,) )
+        obj.data.append( (0xff,) )
+        obj.memo.append( "Delay" )
+        
+        # Restore actual volume
+        obj.addr.append( AMP_VOLUME_ADDR )
+        obj.data.append( (volume,) )
+        obj.memo.append( "Restore amp volume" )
+        
         # Keep this around so we can properly scale controller
         # pedal input
-        obj.volume_midi_scale = data[0][2] / 128
+        obj.volume_midi_scale = volume / 128
         
         return obj
 
     def __init__( self, colorObj, simpleObj, complexObj ):
         self.state = self.Start
         self.id = -1
-        self.ch = -1
         self.addr = []
         self.data = []
         self.memo = []
@@ -146,21 +154,9 @@ class PanelPreset:
             print( "Parse error at line %d. Expecting single integer." )
             sys.exit( 1 )
 
-    def _ch( self, value, lineNum ):
-        if self.state != self.SawId:
-            print( "Phase error at line %d. Expected SawId, but was %d." % (lineNum, self.state) )
-            sys.exit( 1 )
-
-        try:
-            self.ch = int( value )
-            self.state = self.SawCh
-        except ValueError:
-            print( "Parse error at line %d. Expecting single integer." % lineNum )
-            sys.exit( 1 )
-
     def _addr( self, value, lineNum ):
-        if self.state != self.SawCh and self.state != self.SawData:
-            print( "Phase error at line %d. Expected SawCh or SawData, but was %d." % (lineNum, self.state) )
+        if self.state != self.SawId and self.state != self.SawData:
+            print( "Phase error at line %d. Expected SawId or SawData, but was %d." % (lineNum, self.state) )
             sys.exit( 1 )
 
         address_bytes = []
@@ -203,16 +199,16 @@ class PanelPreset:
 
     # Send current data set to amplifier
     def transmit( self, katanaObj ):
-        # katanaObj.send_pc( self.ch )
-        # sleep( 0.05 )
-
         for addr, data in zip( self.addr, self.data ):
+            if addr[0] == 0xff:
+                sleep( 0.05 )
+                continue
+
             katanaObj.send_sysex_data( addr, data )
 
     # Print current data set to passed filehandle.
     def serialize( self, outfh ):
         outfh.write( "_preset %d\n" % self.id )
-        outfh.write( "_ch %d\n" % self.ch )
         i = 0
         for addr, data in zip( self.addr, self.data ):
             if len(self.memo): outfh.write( "# %s\n" % self.memo[i] )

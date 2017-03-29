@@ -139,6 +139,9 @@ Dry Out Level (0..200)
 Place in BTS control mode
 7F 00 00 01 --> 01
 
+NOTE: The amp needs a short settling period after the control
+      mode command.  50-100 msec. seems reasonable.
+
 Send name of amp first:
 60 00 00 00 --> 4B 41 54 41 4E 41 20 20 20 20 20 20 20 20 20 20
 
