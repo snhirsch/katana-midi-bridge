@@ -36,8 +36,10 @@ class ColorButtons:
 
         assign2 = {}
 
-        for knob_rec in self.assign_index['knob'].values():
-            for range_rec in knob_rec['range'].values():
+        for knob in self.assign_index['knob'].keys():
+            knob_rec = self.assign_index['knob'][knob]
+            for range in knob_rec['range'].keys():
+                range_rec = knob_rec['range'][range]
                 assign2[range_rec['category']] = range_rec['colorOffset']
 
         self.assign_index2 = assign2

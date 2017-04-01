@@ -9,7 +9,6 @@ import re
 from time import sleep
 from globals import *
 
-
 class PanelPreset:
 
     # Track object state
@@ -109,9 +108,10 @@ class PanelPreset:
         obj.data.append( data_list_0 )
         obj.memo.append( "Amp Panel" )
 
-        # Store a delay record to prevent "pop" at patch change
+        # Store a delay record to prevent "pop" at patch change.
+        # Data is a single byte specifying delay in ms.
         obj.addr.append( (0xff,) )
-        obj.data.append( (0xff,) )
+        obj.data.append( (50,) )
         obj.memo.append( "Delay" )
         
         # Restore actual volume
@@ -201,7 +201,7 @@ class PanelPreset:
     def transmit( self, katanaObj ):
         for addr, data in zip( self.addr, self.data ):
             if addr[0] == 0xff:
-                sleep( 0.05 )
+                sleep( data[0]/1000 )
                 continue
 
             katanaObj.send_sysex_data( addr, data )
