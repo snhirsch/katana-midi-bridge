@@ -51,45 +51,69 @@ or glossed over something critical.
 
 # Status
 
-The extended preset feature is fully functional and allows you to save
-and recall the entire front-panel state. All MIDI PC#s > 10 are fair
-game and this should be enough for anyone.
+New:
 
-I have implemented translation between CC# 70 and amplifier volume to
-support foot-pedal MIDI controllers. Obviously more work is needed,
-but the sysex definition is huge and I doubt any user will need access
-to even a fraction of the internal parameter set. Rather than spend a
-lot of time implementing adhoc mappings between CC and sysex, I'd like
-to hear from the user community to see what people really need. 
+  + Preset capture / restore now preserves all DSP effect deep
+    settings in addition to front panel knobs and color buttons. My
+    initial scheme (so-called "palettes") was not terribly
+    practical abd the new behavior is more what a user would expect.
 
-One thought: Allow users to setup their own mappings by editing a text
-file.
+  + Preset capture / restore no longer pays attention to built-in
+    presets (aka "Tone Settings"). It simply takes a complete snapshot
+    of the active amplifier state at save and replaces the current
+    state with that saved snapshot at restore.  Restore does **not**
+    overwrite the current "Tone Setting", although you can choose to
+    do that manually if you wish.
 
-## Preset Behavior
+The extended preset feature allows you to save and recall the **entire**
+amplifier state:
 
-My goal was to enable fast, glitch-free recall of bridge-managed user
-presets. The built-in "Tone Settings" are able to instantly restore
-snapshots of all deep parameters on every DSP based effect, but that's
-done by block-copying chunks of data in memory at processor speed.
-Trying to accomplish this by sending thousands of bytes of serial data
-does not work all that smoothly.
+  + All 15 assigned DSP effects
+  + Effects chain
+  + Noise-gate setting
+  + All front panel controls other than Master, Power Control and Tone
+  Setting. (Includes selected ranges and colors in the Effects section)
 
-After some thought, I made a philosophical decision that may seem a
-bit strange: Use the "Tone Settings" as "platforms", or starting
-points, for creating externally stored presets.  The idea is that you
-configure pallettes of DSP effects (Boost, Delay, FX/Mod, Reverb) and
-store them in the four built-in locations.  When you want to create a
-user setting, start with a tone setting that has appropriate effects 
-available.  Then, setup the front-panel controls (including the
-effects "Color Buttons" and knobs) for your desired sound and tell the
-bridge to store this state.  The bridge remembers which internal
-preset you based your sound on and re-selects that before restoring
-the front-panel settings.
+For example, if you have a chorus voice active on green color in the
+FX slot and a pitch-shifter tuned in on yellow the bridge will capture
+both of them (along with whatever was on red!) so you can toggle the
+effect type on your recalled setting and get exactly what you expect.
+Similarly, the bridge stores whatever is setup on the inactive range
+of the Boost/Mod and Delay/Fx knobs. So, to continue the previous
+example, if you had a particular delay type mapped to red you will get
+that back after recall when you move the Delay/Fx knob to the first
+half of its range.
 
-So, we use the internal preset selection to rapidly configure deep
-settings, then send a shorter burst of sysex commands to setup the
-front panel.  This entire operation runs in about 50 msec. with
-only negligible impact on sound.
+At this point I am not capturing the effects loop settings, although
+this is under consideration for a future release.  If it's important
+to you, please weigh in by opening an issue.
+
+You may instruct the bridge software to store the amplfier state in
+MIDI PC# 11-127 as you choose (discussed below).  The data is stored
+in a small disk file on the computer, not the amplifier itself. This
+file is plain text and you can edit it yourself if you know what
+you're doing. 
+
+Mapping of CC values is very limited at this point.  Robert Fransson
+(Codesmart) and I have worked out a full specification that maps CC#
+to almost all functions in the amplifier.  He has completely
+implemented this in the Primova Sound MIDX-20 product.  I fully
+intend to do the same in my code as time permits.  
+
+At this point, the only CC# mapping is:
+
+CC# 70 (0-127) --> Amplifier Volume (0-100)
+
+Volume preset handling needs some explanation. I find it annoying when
+preset recall maps expression pedal toe-down to full volume,
+regardless of where you might have had the volume when shaping your
+tone.  The logic in this program ensures that toe-down on recall gives
+you exactly the volume position that existed at save. I realize this
+may not be everyone's preference and will keep an open mind to
+suggestions or criticism.
+
+NOTE: This range limiting does **not** apply to the built in "Tone
+Settings", but only to presets managed by the bridge program.
 
 # High-Level Overview of Installation
 
