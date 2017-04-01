@@ -8,7 +8,7 @@ discover a rich sysex API on par with other Roland/Boss products like
 the GT-100 guitar processor.  Roland has not made the Katana spec
 public, but I was able to reverse-engineer and document a large
 portion of it by observing USB communication between Boss Tone Studio
-and the emplifier.
+and the amplifier.
 
 This program has three goals:
 
@@ -56,7 +56,7 @@ New:
   + Preset capture / restore now preserves all DSP effect deep
     settings in addition to front panel knobs and color buttons. My
     initial scheme (so-called "palettes") was not terribly
-    practical abd the new behavior is more what a user would expect.
+    practical and the new behavior is more what a user would expect.
 
   + Preset capture / restore no longer pays attention to built-in
     presets (aka "Tone Settings"). It simply takes a complete snapshot
@@ -88,7 +88,7 @@ At this point I am not capturing the effects loop settings, although
 this is under consideration for a future release.  If it's important
 to you, please weigh in by opening an issue.
 
-You may instruct the bridge software to store the amplfier state in
+You may instruct the bridge software to store the amplifier state in
 MIDI PC# 11-127 as you choose (discussed below).  The data is stored
 in a small disk file on the computer, not the amplifier itself. This
 file is plain text and you can edit it yourself if you know what
@@ -179,7 +179,7 @@ CC 3 - Value 127
 within a two second period. Finally, select a program number in the
 range 11..127 where you would like this stored. The bridge will save
 the front-panel state and cycle the LEDs around the 'Amp Type' control
-as an acknowledgement.  This information is permanently saved and can
+as an acknowledgment.  This information is permanently saved and can
 be recalled instantly by re-selecting the PC#.
 
 If you arm the bridge and change your mind, send any other CC message
