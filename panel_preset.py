@@ -42,7 +42,7 @@ class PanelPreset:
                 handler( value, lineNum )
 
             if obj.state == obj.Done:
-                obj.volume_midi_scale = obj.get_data(PANEL_STATE_ADDR, 2, 1)[0] / 128
+                obj.volume_midi_scale = obj.get_data(AMP_VOLUME_ADDR, 0, 1)[0] / 128
                 yield obj
                 obj = PanelPreset(None, None, None)
                 
