@@ -8,6 +8,18 @@ import sys
 import re
 from time import sleep
 from globals import *
+from pprint import pprint
+
+class ParmRec:
+    def __init__( self, addr=None, data=None, memo="" ):
+        self.addr = addr
+        self.data = data
+        self.memo = memo
+
+    def to_string( self ):
+        print( "Memo: ", self.memo )
+        print( "Addr: ", self.addr )
+        print( "Data: ", self.data )
 
 class PanelPreset:
 
@@ -25,7 +37,11 @@ class PanelPreset:
             lineNum += 1
             line = line.strip()
             if len( line ) == 0: continue
-            if re.match( r'^#', line ): continue
+            if re.match( r'^#', line ):
+                # If we're in a preset stanza gather comments
+                if obj.curr_rec != None:
+                    obj.curr_rec.memo += line
+                continue
 
             try:
                 type, value = line.split( ' ', 1 )
@@ -59,9 +75,8 @@ class PanelPreset:
         obj.id = preset_id
 
         # Store zero-volume command
-        obj.addr.append( AMP_VOLUME_ADDR )
-        obj.data.append( (0,) )
-        obj.memo.append( "Mute amplfier" )
+        parm = ParmRec( AMP_VOLUME_ADDR, (0,), "Mute amplifier" )
+        obj.parms.append( parm )
         
         # NOTE: This code can hang or blow up with invalid list index if
         #       remnants from an earlier reply are sitting in the input
@@ -77,21 +92,18 @@ class PanelPreset:
             for block in coords['blocks']:
                 addr, length = block
                 addr, data = katana.query_sysex_data( addr, length )
-                obj.addr.append( addr[0] )
-                obj.data.append( data[0] )
-                obj.memo.append( "Category: %s, Type: %s" % (rec['category'], coords['name']) )
-        
+                parm = ParmRec( addr[0], data[0], "Category: %s, Type: %s" % (rec['category'], coords['name']) )
+                obj.parms.append( parm )
+                
         # Read chain, color assign and color button state
         addr, data = katana.query_sysex_data( COLOR_ASSIGN_ADDR, COLOR_ASSIGN_LEN )
-        obj.addr.append( addr[0] )
-        obj.data.append( data[0] )
-        obj.memo.append( "Color Assign" )
+        parm = ParmRec( addr[0], data[0], "Color assign" )
+        obj.parms.append( parm )
         
         # Read noise gate state
         addr, data = katana.query_sysex_data( NS_ADDR, NS_LEN )
-        obj.addr.append( addr[0] )
-        obj.data.append( data[0] )
-        obj.memo.append( "Noise Gate" )
+        parm = ParmRec( addr[0], data[0], "Noise Gate" )
+        obj.parms.append( parm )
         
         # Read amplifier panel block
         addr, data = katana.query_sysex_data( PANEL_STATE_ADDR, PANEL_STATE_LEN )
@@ -104,20 +116,17 @@ class PanelPreset:
         data_list_0[2] = 0
 
         # Store patched block
-        obj.addr.append( addr[0] )
-        obj.data.append( data_list_0 )
-        obj.memo.append( "Amp Panel" )
-
+        parm = ParmRec( addr[0], data_list_0, "Amp Panel" )
+        obj.parms.append( parm )
+        
         # Store a delay record to prevent "pop" at patch change.
         # Data is a single byte specifying delay in ms.
-        obj.addr.append( (0xff,) )
-        obj.data.append( (50,) )
-        obj.memo.append( "Delay" )
+        parm = ParmRec( (0xff,), (50,), "Delay" )
+        obj.parms.append( parm )
         
         # Restore actual volume
-        obj.addr.append( AMP_VOLUME_ADDR )
-        obj.data.append( (volume,) )
-        obj.memo.append( "Restore amp volume" )
+        parm = ParmRec( AMP_VOLUME_ADDR, (volume,), "Restore amp volume" )
+        obj.parms.append( parm )
         
         # Keep this around so we can properly scale controller
         # pedal input
@@ -128,11 +137,11 @@ class PanelPreset:
     def __init__( self, colorObj, simpleObj, complexObj ):
         self.state = self.Start
         self.id = -1
-        self.addr = []
-        self.data = []
-        self.memo = []
+
         self.by_addr = {}
-        self.curr_address = None
+        self.curr_rec = None
+        self.parms = []
+        
         self.colorObj = colorObj
         self.dsp = {}
         self.dsp['simple'] = simpleObj
@@ -147,9 +156,9 @@ class PanelPreset:
 
         try:
             self.id = int( value )
+            self.curr_rec = ParmRec()
             self.state = self.SawId
-            self.curr_address = None
-            
+
         except ValueError:
             print( "Parse error at line %d. Expecting single integer." )
             sys.exit( 1 )
@@ -163,9 +172,7 @@ class PanelPreset:
         for hex in value.split():
             address_bytes.append( int(hex,16) )
 
-        self.curr_address = tuple( address_bytes )
-        self.by_addr[ self.curr_address ] = []
-        self.addr.append( address_bytes )
+        self.curr_rec.addr = tuple( address_bytes )
         self.state = self.SawAddr
 
     def _data( self, value, lineNum ):
@@ -176,8 +183,11 @@ class PanelPreset:
         data = []
         for hex in value.split():
             data.append( int(hex,16) )
-        self.data.append( data )
-        self.by_addr[ self.curr_address ].extend( data )
+
+        self.curr_rec.data = tuple( data )
+        self.parms.append( self.curr_rec )
+        self.by_addr[ self.curr_rec.addr ] = self.curr_rec
+        self.curr_rec = ParmRec()
         self.state = self.SawData
 
     def _endPreset( self, value, lineNum ):
@@ -194,29 +204,29 @@ class PanelPreset:
         if endId != self.id:
             print( "Parse error at line %d. Preset number mismatch. Expected %d, but saw %d." % (lineNum, self.id, endId) )
             sys.exit( 1 )
-
+            
         self.state = self.Done
 
     # Send current data set to amplifier
     def transmit( self, katanaObj ):
-        for addr, data in zip( self.addr, self.data ):
-            if addr[0] == 0xff:
-                sleep( data[0]/1000 )
+        for parm in self.parms:
+            if parm.addr[0] == 0xff:
+                sleep( parm.data[0]/1000 )
                 continue
 
-            katanaObj.send_sysex_data( addr, data )
+            katanaObj.send_sysex_data( parm.addr, parm.data )
 
     # Print current data set to passed filehandle.
     def serialize( self, outfh ):
         outfh.write( "_preset %d\n" % self.id )
         i = 0
-        for addr, data in zip( self.addr, self.data ):
-            if len(self.memo): outfh.write( "# %s\n" % self.memo[i] )
+        for parm in self.parms:
+            if len(parm.memo): outfh.write( "# %s\n" % parm.memo )
             
-            hexstr = ' '.join( "%02x" % i for i in addr )
+            hexstr = ' '.join( "%02x" % i for i in parm.addr )
             outfh.write( "_addr %s\n" % hexstr )
 
-            hexstr = ' '.join( "%02x" % i for i in data )
+            hexstr = ' '.join( "%02x" % i for i in parm.data )
             outfh.write( "_data %s\n" % hexstr )
             i += 1
             
@@ -242,7 +252,8 @@ class PanelPreset:
     # base address, offset and count.
     def get_data( self, address, offset, count ):
         if address in self.by_addr:
-            bytes = self.by_addr[ address ]
+            parm = self.by_addr[ address ]
+            bytes = parm.data
             if offset + count > len( bytes ):
                 count = len( bytes ) - offset
             return bytes[ offset : offset + count ]
@@ -250,15 +261,23 @@ class PanelPreset:
             return []
         
 if __name__ == '__main__':
+    
+    args = sys.argv
+
     file = sys.stdout
 
-    infh = open( "test.file", 'r' )
+    infh = open( args[1], 'r' )
 
     objs = []
     for obj in PanelPreset.get_from_file( infh ):
         objs.append( obj )
 
     for obj in objs:
+        for parm in obj.parms:
+            print( "-----" )
+            parm.to_string()
+            print( "---" )
+            
         obj.serialize( file )
-        test_data = obj.get_data( (0x00,0x00,0x04,0x10), 18, 1 )
+        test_data = obj.get_data( PANEL_STATE_ADDR, 0, 1 )
         print( "Test data = " + str(test_data).strip('[]') )
