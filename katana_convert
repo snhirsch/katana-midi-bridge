@@ -1,0 +1,98 @@
+#!/usr/bin/python3
+# -*-python-*-
+
+import sys
+import os
+import mido
+import time
+import math
+
+from panel_preset import PanelPreset
+from panel_preset_old import PanelPresetOld
+
+from katana import Katana
+from range import Range
+
+mido.set_backend('mido.backends.rtmidi')
+
+def load_presets( filename, presets ):
+    if os.path.isfile( filename ):
+        # Read all presets
+        with open(filename,'r') as fh:
+            for rec in PanelPresetOld.get_from_file( fh ):
+                presets[rec.id] = rec
+
+# Rename existing data file and persist current
+# live data to disk
+def save_presets( filename, presets ):
+    try:
+        if os.path.isfile( filename ):
+            os.rename( filename, filename + ".bak" )
+
+        with open(filename,'w') as outfh:
+            for rec in presets.values():
+                rec.serialize( outfh )
+    except OSError:
+        syslog.syslog( "Error saving presets: " + OSError )
+        # sys.exit( 1 )
+
+# Capture and persist a new preset (overwrites existing)
+def capture_preset( katana, program, presets ):
+    # Read amp into rec using controller PC program value as id
+    rec = PanelPreset.read_from_amp( katana, program, rangeObj )
+    presets[ rec.id ] = rec
+
+
+
+################################ (main) ##################################
+
+args = sys.argv
+if len(args) < 5:
+    print( "Usage: bridge.py <amplifier_port> <amp_channel> <old_preset_file> <new_preset_file>\n" )
+    print( "       Ex:\n" )
+    print( "          bridge.py \"KATANA:KATANA MIDI 1 20:0\" 1 old_presets.txt new_presets.txt\n" )
+    sys.exit( 1 )
+
+# Load parameter metadata
+scriptdir = os.environ.get('PYTHONPATH')
+if scriptdir == None:
+    scriptdir = os.path.dirname(os.path.abspath(__file__))
+
+datadir = scriptdir + '/parameters/'
+
+rangeObj = Range( datadir + 'ranges.json' )
+
+# Amp interface
+amp = args[1]
+
+# Amp MIDI port 
+try:
+    amp_channel = int( args[2] ) - 1
+except ValueError:
+    print( "Arg4 must be numeric!\n" )
+    sys.exit( 1 )
+
+katana = Katana( amp, amp_channel, clear_input=True )
+
+# Preset data
+old_preset_file = args[3]
+new_preset_file = args[4]
+
+old_presets = dict()
+new_presets = dict()
+
+# Load old presets from file
+print( "Load old preset file" )
+load_presets( old_preset_file, old_presets )
+
+for program, presetObj in old_presets.items():
+    print( "Restore old preset %d to amp" % program )
+    presetObj.transmit( katana )
+    time.sleep( 0.5 )
+    print( "  Capture patch area into new preset object" )
+    capture_preset( katana, program, new_presets )
+
+print( "Save new preset file" )
+save_presets( new_preset_file, new_presets )
+
+print( "Done" )

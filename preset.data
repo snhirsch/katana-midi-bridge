@@ -1,144 +1,733 @@
+_preset 10
+# Amp Panel
+_addr 00 00 04 20
+_data 03 18 25 50 27 08 00 36 00 28
+# Category: boost, Type: BluesDrive
+_addr 60 00 00 30
+_data 00 0a 46 3c 32 00 32 28 00
+# Category: delay, Type: Digital
+_addr 60 00 05 60
+_data 00 00 04 02 23 0c 00 64
+# Category: reverb, Type: Hall
+_addr 60 00 06 10
+_data 01 03 1d 00 0a 02 0a 0a 43 64 05
+# Category: mod, Type: Phaser
+_addr 60 00 01 40
+_data 01 07
+# Category: mod, Type: Phaser
+_addr 60 00 02 75
+_data 00 0c 28 37 00 00 64 00
+# Category: mod, Type: Flanger
+_addr 60 00 01 40
+_data 01 07
+# Category: mod, Type: Flanger
+_addr 60 00 02 7e
+_data 1f 28 52 32 00 00 3c 00
+# Category: mod, Type: ParametricEQ
+_addr 60 00 01 40
+_data 01 07
+# Category: mod, Type: ParametricEQ
+_addr 60 00 01 7c
+_data 08 14 0d 01 14 16 04 0f 14 0b 14
+# Category: fx, Type: Octave
+_addr 60 00 03 4c
+_data 00 0e
+# Category: fx, Type: Octave
+_addr 60 00 04 3d
+_data 00 00 64
+# Category: fx, Type: T-Wah
+_addr 60 00 03 4c
+_data 00 0e
+# Category: fx, Type: T-Wah
+_addr 60 00 03 58
+_data 01 01 32 23 23 00 32 00 01 23 32 32 3c 00 32 00 00 64 00
+# Category: fx, Type: Tremolo
+_addr 60 00 03 4c
+_data 00 0e
+# Category: fx, Type: Tremolo
+_addr 60 00 05 13
+_data 46 55 41 32
+# Color Assign
+_addr 60 00 12 00
+_data 00 0a 0b 0e 07 14 13 00 07 08 15 00 0e 04 05 03 00 00 00 02 02
+# Noise Gate
+_addr 60 00 06 63
+_data 01 16 32
+_endPreset 10
+
+_preset 11
+# Amp Panel
+_addr 00 00 04 20
+_data 03 18 37 50 27 08 00 36 00 28
+# Category: boost, Type: BluesDrive
+_addr 60 00 00 30
+_data 00 0a 46 3c 32 00 32 28 00
+# Category: delay, Type: Digital
+_addr 60 00 05 60
+_data 00 00 04 02 23 0c 00 64
+# Category: reverb, Type: Hall
+_addr 60 00 06 10
+_data 01 03 1d 00 0a 02 0a 0a 43 64 05
+# Category: mod, Type: Phaser
+_addr 60 00 01 40
+_data 01 07
+# Category: mod, Type: Phaser
+_addr 60 00 02 75
+_data 00 0c 28 37 00 00 64 00
+# Category: mod, Type: Flanger
+_addr 60 00 01 40
+_data 01 07
+# Category: mod, Type: Flanger
+_addr 60 00 02 7e
+_data 1f 28 52 32 00 00 3c 00
+# Category: mod, Type: ParametricEQ
+_addr 60 00 01 40
+_data 01 07
+# Category: mod, Type: ParametricEQ
+_addr 60 00 01 7c
+_data 08 14 0d 01 14 16 04 0f 14 0b 14
+# Category: fx, Type: Octave
+_addr 60 00 03 4c
+_data 00 0e
+# Category: fx, Type: Octave
+_addr 60 00 04 3d
+_data 00 00 64
+# Category: fx, Type: T-Wah
+_addr 60 00 03 4c
+_data 00 0e
+# Category: fx, Type: T-Wah
+_addr 60 00 03 58
+_data 01 01 32 23 23 00 32 00 01 23 32 32 3c 00 32 00 00 64 00
+# Category: fx, Type: Tremolo
+_addr 60 00 03 4c
+_data 00 0e
+# Category: fx, Type: Tremolo
+_addr 60 00 05 13
+_data 46 55 41 32
+# Color Assign
+_addr 60 00 12 00
+_data 00 0a 0b 0e 07 14 13 00 07 08 15 00 0e 04 05 03 00 00 00 02 02
+# Noise Gate
+_addr 60 00 06 63
+_data 01 16 32
+_endPreset 11
+
+_preset 12
+_addr 00 00 04 20
+_data 03 18 1e 50 27 08 00 36 00 28
+_addr 60 00 00 30
+_data 00 0a 46 3c 32 00 32 28 00
+_addr 60 00 05 60
+_data 00 00 04 02 20 0c 29 64
+_addr 60 00 06 10
+_data 01 03 1d 00 0a 02 0a 0a 43 64 05
+_addr 60 00 01 40
+_data 01 07
+_addr 60 00 02 75
+_data 00 0c 28 37 00 00 64 00
+_addr 60 00 01 40
+_data 01 07
+_addr 60 00 01 7c
+_data 08 14 0d 01 14 16 04 0f 14 0b 14
+_addr 60 00 01 40
+_data 01 07
+_addr 60 00 02 7e
+_data 1f 28 52 32 00 00 3c 00
+_addr 60 00 03 4c
+_data 00 0e
+_addr 60 00 04 3d
+_data 00 00 64
+_addr 60 00 03 4c
+_data 00 0e
+_addr 60 00 05 13
+_data 46 55 41 32
+_addr 60 00 03 4c
+_data 00 0e
+_addr 60 00 03 58
+_data 01 01 32 23 23 00 32 00 01 23 32 32 3c 00 32 00 00 64 00
+_addr 60 00 12 00
+_data 00 0a 0b 0e 07 14 13 00 07 08 15 00 0e 04 05 03 00 00 00 02 02
+_addr 60 00 06 63
+_data 01 16 32
+_endPreset 12
+
+_preset 13
+_addr 00 00 04 20
+_data 04 24 15 46 30 06 00 34 34 37
+_addr 60 00 00 30
+_data 00 0a 46 3c 32 00 32 28 00
+_addr 60 00 05 60
+_data 00 08 0c 5e 16 0a 64 64
+_addr 60 00 06 10
+_data 01 04 1b 00 08 0e 0c 05 45 64 05
+_addr 60 00 01 40
+_data 00 03
+_addr 60 00 02 7e
+_data 25 28 52 32 00 00 3c 00
+_addr 60 00 01 40
+_data 00 03
+_addr 60 00 01 63
+_data 00 14 32 32 1e
+_addr 60 00 01 40
+_data 00 03
+_addr 60 00 02 75
+_data 00 25 28 37 00 00 64 00
+_addr 60 00 03 4c
+_data 00 1d
+_addr 60 00 05 46
+_data 1b 2e 03 4b 11 3f 29 35 50 00 03 10 14 0e 32 64
+_addr 60 00 03 4c
+_data 00 1d
+_addr 60 00 04 08
+_data 08 14 0d 01 17 17 01 14 14 0e 13
+_addr 60 00 03 4c
+_data 00 1d
+_addr 60 00 04 3d
+_data 00 04 64
+_addr 60 00 12 00
+_data 01 0a 0b 0e 03 14 13 00 07 08 07 1d 0e 04 05 04 00 00 02 01 02
+_addr 60 00 06 63
+_data 01 16 32
+_endPreset 13
+
+_preset 14
+_addr 00 00 04 20
+_data 04 24 15 46 30 06 00 34 34 37
+_addr 60 00 00 30
+_data 00 0a 46 3c 32 00 32 28 00
+_addr 60 00 05 60
+_data 00 08 0c 5e 16 0a 64 64
+_addr 60 00 06 10
+_data 01 04 1b 00 08 0e 0c 05 45 64 05
+_addr 60 00 01 40
+_data 00 03
+_addr 60 00 02 7e
+_data 25 28 52 32 00 00 3c 00
+_addr 60 00 01 40
+_data 00 03
+_addr 60 00 01 63
+_data 00 14 32 32 1e
+_addr 60 00 01 40
+_data 00 03
+_addr 60 00 02 75
+_data 00 25 28 37 00 00 64 00
+_addr 60 00 03 4c
+_data 00 1d
+_addr 60 00 05 46
+_data 14 2e 03 4b 0a 3f 29 35 50 00 03 10 14 0e 32 64
+_addr 60 00 03 4c
+_data 00 1d
+_addr 60 00 04 08
+_data 08 14 0d 01 17 17 01 14 14 0e 13
+_addr 60 00 03 4c
+_data 00 1d
+_addr 60 00 04 3d
+_data 00 04 64
+_addr 60 00 12 00
+_data 01 0a 0b 0e 03 14 13 00 07 08 07 1d 0e 04 05 04 00 00 02 01 02
+_addr 60 00 06 63
+_data 01 16 32
+_endPreset 14
+
+_preset 15
+_addr 00 00 04 20
+_data 01 33 32 46 5a 42 00 1c 34 27
+_addr 60 00 00 30
+_data 01 0a 25 3c 28 00 32 30 00
+_addr 60 00 05 60
+_data 00 08 0c 5e 16 0a 64 64
+_addr 60 00 06 10
+_data 01 04 1b 00 08 0e 0c 05 3b 64 05
+_addr 60 00 01 40
+_data 00 03
+_addr 60 00 02 7e
+_data 25 28 52 32 00 00 3c 00
+_addr 60 00 01 40
+_data 00 03
+_addr 60 00 01 63
+_data 00 14 32 32 1e
+_addr 60 00 01 40
+_data 00 03
+_addr 60 00 02 75
+_data 00 25 28 37 00 00 64 00
+_addr 60 00 03 4c
+_data 00 1d
+_addr 60 00 05 46
+_data 21 2e 03 4b 17 3f 29 35 47 00 03 10 14 0e 32 64
+_addr 60 00 03 4c
+_data 00 1d
+_addr 60 00 04 08
+_data 08 14 0d 01 17 17 01 14 14 0e 13
+_addr 60 00 03 4c
+_data 00 1d
+_addr 60 00 04 3d
+_data 00 04 64
+_addr 60 00 12 00
+_data 01 0a 0b 0e 03 14 13 00 07 08 07 1d 0e 04 05 04 00 00 02 01 02
+_addr 60 00 06 63
+_data 01 16 32
+_endPreset 15
+
+_preset 16
+# Amp Panel
+_addr 00 00 04 20
+_data 01 33 19 46 5a 42 00 1c 34 27
+# Category: boost, Type: BluesDrive
+_addr 60 00 00 30
+_data 01 0a 26 3c 28 00 32 38 00
+# Category: delay, Type: TapeEcho
+_addr 60 00 05 60
+_data 00 08 0c 5e 16 0a 64 64
+# Category: reverb, Type: Plate
+_addr 60 00 06 10
+_data 01 04 1b 00 08 0e 0c 05 3b 64 05
+# Category: mod, Type: Phaser
+_addr 60 00 01 40
+_data 00 03
+# Category: mod, Type: Phaser
+_addr 60 00 02 75
+_data 00 25 28 37 00 00 64 00
+# Category: mod, Type: Flanger
+_addr 60 00 01 40
+_data 00 03
+# Category: mod, Type: Flanger
+_addr 60 00 02 7e
+_data 25 28 52 32 00 00 3c 00
+# Category: mod, Type: Comp
+_addr 60 00 01 40
+_data 00 03
+# Category: mod, Type: Comp
+_addr 60 00 01 63
+_data 00 14 32 32 1e
+# Category: fx, Type: Octave
+_addr 60 00 03 4c
+_data 00 1d
+# Category: fx, Type: Octave
+_addr 60 00 04 3d
+_data 00 04 64
+# Category: fx, Type: Chorus
+_addr 60 00 03 4c
+_data 00 1d
+# Category: fx, Type: Chorus
+_addr 60 00 05 46
+_data 14 2e 03 4b 0a 3f 29 35 47 00 03 10 14 0e 32 64
+# Category: fx, Type: ParametricEQ
+_addr 60 00 03 4c
+_data 00 1d
+# Category: fx, Type: ParametricEQ
+_addr 60 00 04 08
+_data 08 14 0d 01 17 17 01 14 14 0e 13
+# Color Assign
+_addr 60 00 12 00
+_data 01 0a 0b 0e 03 14 13 00 07 08 07 1d 0e 04 05 04 00 00 02 01 02
+# Noise Gate
+_addr 60 00 06 63
+_data 01 16 32
+_endPreset 16
+
+_preset 17
+_addr 00 00 04 20
+_data 01 33 32 46 5a 42 00 1c 34 27
+_addr 60 00 00 30
+_data 01 0a 25 3c 28 00 32 30 00
+_addr 60 00 05 60
+_data 00 08 0c 5e 16 0a 64 64
+_addr 60 00 06 10
+_data 01 04 1b 00 08 0e 0c 05 3b 64 05
+_addr 60 00 01 40
+_data 00 03
+_addr 60 00 02 7e
+_data 25 28 52 32 00 00 3c 00
+_addr 60 00 01 40
+_data 00 03
+_addr 60 00 01 63
+_data 00 14 32 32 1e
+_addr 60 00 01 40
+_data 00 03
+_addr 60 00 02 75
+_data 00 25 28 37 00 00 64 00
+_addr 60 00 03 4c
+_data 00 1d
+_addr 60 00 05 46
+_data 14 2e 03 4b 0a 3f 29 35 47 00 03 10 14 0e 32 64
+_addr 60 00 03 4c
+_data 00 1d
+_addr 60 00 04 08
+_data 08 14 0d 01 17 17 01 14 14 0e 13
+_addr 60 00 03 4c
+_data 00 1d
+_addr 60 00 04 3d
+_data 00 04 64
+_addr 60 00 12 00
+_data 01 0a 0b 0e 03 14 13 00 07 08 07 1d 0e 04 05 04 00 00 02 01 02
+_addr 60 00 06 63
+_data 01 16 32
+_endPreset 17
+
+_preset 18
+_addr 00 00 04 20
+_data 01 3b 47 46 33 1f 00 41 00 1d
+_addr 60 00 00 30
+_data 00 0a 46 3c 32 00 32 28 00
+_addr 60 00 05 60
+_data 00 07 01 66 23 08 00 64
+_addr 60 00 06 10
+_data 01 04 1b 00 08 0e 0c 05 34 64 05
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 02 7e
+_data 18 28 52 32 00 00 3c 00
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 01 63
+_data 00 27 48 32 23
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 02 75
+_data 00 18 28 37 00 00 64 00
+_addr 60 00 03 4c
+_data 00 07
+_addr 60 00 03 58
+_data 01 01 32 23 23 00 32 00 01 23 32 32 3c 00 32 00 00 64 00
+_addr 60 00 03 4c
+_data 00 07
+_addr 60 00 04 08
+_data 08 14 0d 01 14 17 01 14 14 0e 14
+_addr 60 00 03 4c
+_data 00 07
+_addr 60 00 04 3d
+_data 00 0c 64
+_addr 60 00 12 00
+_data 01 0a 0b 0e 03 14 13 07 07 08 07 00 0e 04 05 04 00 00 00 00 02
+_addr 60 00 06 63
+_data 01 2a 32
+_endPreset 18
+
+_preset 19
+_addr 00 00 04 20
+_data 01 47 47 46 33 1f 00 41 45 1d
+_addr 60 00 00 30
+_data 00 0a 46 3c 32 00 32 28 00
+_addr 60 00 05 60
+_data 00 07 01 66 16 08 64 64
+_addr 60 00 06 10
+_data 01 04 1b 00 08 0e 0c 05 34 64 05
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 02 7e
+_data 18 28 52 32 00 00 3c 00
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 01 63
+_data 00 27 48 32 23
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 02 75
+_data 00 18 28 37 00 00 64 00
+_addr 60 00 03 4c
+_data 01 1d
+_addr 60 00 05 46
+_data 27 2e 1d 4b 1d 3f 2e 35 3d 00 03 10 14 0e 32 64
+_addr 60 00 03 4c
+_data 01 1d
+_addr 60 00 05 0a
+_data 24 1f 50 15 00 04 3c 00
+_addr 60 00 03 4c
+_data 01 1d
+_addr 60 00 05 20
+_data 1f 22 64
+_addr 60 00 12 00
+_data 01 0a 0b 0e 03 14 13 07 07 08 14 1d 17 04 05 04 00 00 00 01 02
+_addr 60 00 06 63
+_data 01 2a 32
+_endPreset 19
+
+_preset 20
+_addr 00 00 04 20
+_data 01 25 39 46 33 1f 00 41 10 42
+_addr 60 00 00 30
+_data 00 0a 46 3c 32 00 32 28 00
+_addr 60 00 05 60
+_data 01 07 01 66 0e 0a 31 64
+_addr 60 00 06 10
+_data 01 04 1b 00 08 0e 0c 05 4d 64 05
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 02 7e
+_data 18 28 52 32 00 00 3c 00
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 02 75
+_data 00 18 28 37 00 00 64 00
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 01 63
+_data 00 27 48 32 28
+_addr 60 00 03 4c
+_data 00 07
+_addr 60 00 03 58
+_data 01 01 32 23 23 00 32 00 01 23 32 32 3c 00 32 00 00 64 00
+_addr 60 00 03 4c
+_data 00 07
+_addr 60 00 04 3d
+_data 00 0c 64
+_addr 60 00 03 4c
+_data 00 07
+_addr 60 00 04 08
+_data 08 14 0d 01 14 17 01 14 14 0e 14
+_addr 60 00 12 00
+_data 01 0a 0b 0e 03 14 13 07 07 08 07 00 0e 04 05 04 00 00 00 00 02
+_addr 60 00 06 63
+_data 01 2a 32
+_endPreset 20
+
+_preset 21
+_addr 00 00 04 20
+_data 01 25 39 46 33 1f 00 41 00 42
+_addr 60 00 00 30
+_data 00 0a 46 3c 32 00 32 28 00
+_addr 60 00 05 60
+_data 00 07 01 66 0e 0a 31 64
+_addr 60 00 06 10
+_data 01 04 1b 00 08 0e 0c 05 4d 64 05
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 02 7e
+_data 18 28 52 32 00 00 3c 00
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 02 75
+_data 00 18 28 37 00 00 64 00
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 01 63
+_data 00 27 48 32 28
+_addr 60 00 03 4c
+_data 00 07
+_addr 60 00 03 58
+_data 01 01 32 23 23 00 32 00 01 23 32 32 3c 00 32 00 00 64 00
+_addr 60 00 03 4c
+_data 00 07
+_addr 60 00 04 3d
+_data 00 0c 64
+_addr 60 00 03 4c
+_data 00 07
+_addr 60 00 04 08
+_data 08 14 0d 01 14 17 01 14 14 0e 14
+_addr 60 00 12 00
+_data 01 0a 0b 0e 03 14 13 07 07 08 07 00 0e 04 05 04 00 00 00 00 02
+_addr 60 00 06 63
+_data 01 2a 32
+_endPreset 21
+
+_preset 22
+_addr 00 00 04 20
+_data 00 25 4d 29 27 1f 00 35 35 25
+_addr 60 00 00 30
+_data 00 0a 46 3c 32 00 32 28 00
+_addr 60 00 05 60
+_data 00 07 01 66 23 08 00 64
+_addr 60 00 06 10
+_data 01 04 1b 00 08 0e 0c 05 39 64 05
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 01 63
+_data 00 14 36 40 45
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 02 75
+_data 00 18 28 37 00 00 64 00
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 02 7e
+_data 18 28 52 32 00 00 3c 00
+_addr 60 00 03 4c
+_data 01 07
+_addr 60 00 04 08
+_data 09 14 0d 02 10 17 01 14 14 0e 14
+_addr 60 00 03 4c
+_data 01 07
+_addr 60 00 04 3d
+_data 00 0c 64
+_addr 60 00 03 4c
+_data 01 07
+_addr 60 00 03 58
+_data 01 01 32 23 23 00 32 00 01 23 32 32 3c 00 32 00 00 64 00
+_addr 60 00 12 00
+_data 01 0a 0b 0e 03 14 13 07 07 08 07 00 0e 04 05 04 00 00 00 00 02
+_addr 60 00 06 63
+_data 01 2a 32
+_endPreset 22
+
+_preset 23
+_addr 00 00 04 20
+_data 00 25 4d 29 27 1f 00 35 35 25
+_addr 60 00 00 30
+_data 00 0a 46 3c 32 00 32 28 00
+_addr 60 00 05 60
+_data 00 07 01 66 23 08 00 64
+_addr 60 00 06 10
+_data 01 04 1b 00 08 0e 0c 05 39 64 05
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 02 7e
+_data 18 28 52 32 00 00 3c 00
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 01 63
+_data 00 14 36 40 45
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 02 75
+_data 00 18 28 37 00 00 64 00
+_addr 60 00 03 4c
+_data 01 07
+_addr 60 00 03 58
+_data 01 01 32 23 23 00 32 00 01 23 32 32 3c 00 32 00 00 64 00
+_addr 60 00 03 4c
+_data 01 07
+_addr 60 00 04 08
+_data 09 14 0d 02 10 17 01 14 14 0e 14
+_addr 60 00 03 4c
+_data 01 07
+_addr 60 00 04 3d
+_data 00 0c 64
+_addr 60 00 12 00
+_data 01 0a 0b 0e 03 14 13 07 07 08 07 00 0e 04 05 04 00 00 00 00 02
+_addr 60 00 06 63
+_data 01 2a 32
+_endPreset 23
+
 _preset 24
-_addr 00 00 04 22
-_data 00
+_addr 00 00 04 20
+_data 00 25 4d 29 27 1f 00 35 35 25
 _addr 60 00 00 30
-_data 01 0a 23 3c 32 00 32 3a 00
+_data 00 0a 46 3c 32 00 32 28 00
 _addr 60 00 05 60
-_data 01 00 04 02 20 0c 29 64
+_data 00 07 01 66 23 08 00 64
 _addr 60 00 06 10
-_data 01 03 1d 00 0a 02 0a 0a 43 64 05
+_data 01 04 1b 00 08 0e 0c 05 39 64 05
 _addr 60 00 01 40
-_data 00 13
+_data 01 03
+_addr 60 00 01 63
+_data 00 14 36 40 45
+_addr 60 00 01 40
+_data 01 03
 _addr 60 00 02 75
-_data 00 0a 28 37 00 00 64 00
+_data 00 18 28 37 00 00 64 00
 _addr 60 00 01 40
-_data 00 13
+_data 01 03
 _addr 60 00 02 7e
-_data 1f 28 52 32 00 00 3c 00
-_addr 60 00 01 40
-_data 00 13
-_addr 60 00 03 3a
-_data 2b 2e 03 4b 21 30 03 41 50 00 03 10 14 0e 32 64
+_data 18 28 52 32 00 00 3c 00
 _addr 60 00 03 4c
-_data 00 0e
+_data 01 07
+_addr 60 00 04 08
+_data 09 14 0d 02 10 17 01 14 14 0e 14
+_addr 60 00 03 4c
+_data 01 07
 _addr 60 00 04 3d
-_data 00 00 64
+_data 00 0c 64
 _addr 60 00 03 4c
-_data 00 0e
+_data 01 07
 _addr 60 00 03 58
 _data 01 01 32 23 23 00 32 00 01 23 32 32 3c 00 32 00 00 64 00
-_addr 60 00 03 4c
-_data 00 0e
-_addr 60 00 05 13
-_data 46 55 41 32
 _addr 60 00 12 00
-_data 01 0a 0b 0e 1d 14 13 00 07 08 15 00 0e 04 05 03 00 02 00 02 02
+_data 01 0a 0b 0e 03 14 13 07 07 08 07 00 0e 04 05 04 00 00 00 00 02
 _addr 60 00 06 63
-_data 01 16 32
-_addr 00 00 04 20
-_data 03 0e 00 50 27 08 00 1a 0d 28
-_addr ff
-_data 32
-_addr 00 00 04 22
-_data 1e
+_data 01 2a 32
 _endPreset 24
+
 _preset 25
-_addr 00 00 04 22
-_data 00
-_addr 60 00 00 30
-_data 01 0a 1d 3c 32 00 32 3c 00
-_addr 60 00 05 60
-_data 01 00 04 02 20 0c 29 64
-_addr 60 00 06 10
-_data 01 03 1d 00 0a 02 0a 0a 43 64 05
-_addr 60 00 01 40
-_data 00 13
-_addr 60 00 02 7e
-_data 1f 28 52 32 00 00 3c 00
-_addr 60 00 01 40
-_data 00 13
-_addr 60 00 03 3a
-_data 2b 2e 03 4b 21 30 03 41 50 00 03 10 14 0e 32 64
-_addr 60 00 01 40
-_data 00 13
-_addr 60 00 02 75
-_data 00 0a 28 37 00 00 64 00
-_addr 60 00 03 4c
-_data 00 0e
-_addr 60 00 03 58
-_data 01 01 32 23 23 00 32 00 01 23 32 32 3c 00 32 00 00 64 00
-_addr 60 00 03 4c
-_data 00 0e
-_addr 60 00 05 13
-_data 46 55 41 32
-_addr 60 00 03 4c
-_data 00 0e
-_addr 60 00 04 3d
-_data 00 00 64
-_addr 60 00 12 00
-_data 01 0a 0b 0e 1d 14 13 00 07 08 15 00 0e 04 05 03 00 02 00 02 02
-_addr 60 00 06 63
-_data 01 16 32
 _addr 00 00 04 20
-_data 03 00 00 50 27 08 00 16 0d 28
-_addr ff
-_data 32
-_addr 00 00 04 22
-_data 1e
+_data 02 1a 28 46 2e 1f 00 41 45 1d
+_addr 60 00 00 30
+_data 00 0a 46 3c 32 00 32 28 00
+_addr 60 00 05 60
+_data 00 07 01 66 16 08 64 64
+_addr 60 00 06 10
+_data 01 04 1b 00 08 0e 0c 05 34 64 05
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 02 75
+_data 00 18 28 37 00 00 64 00
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 01 63
+_data 00 27 48 32 23
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 02 7e
+_data 18 28 52 32 00 00 3c 00
+_addr 60 00 03 4c
+_data 01 1d
+_addr 60 00 05 20
+_data 1f 22 64
+_addr 60 00 03 4c
+_data 01 1d
+_addr 60 00 05 0a
+_data 24 1f 50 15 00 04 3c 00
+_addr 60 00 03 4c
+_data 01 1d
+_addr 60 00 05 46
+_data 27 27 1d 4b 1d 33 2e 35 3d 00 03 10 14 0e 32 64
+_addr 60 00 12 00
+_data 01 0a 0b 0e 03 14 13 07 07 08 14 1d 17 04 05 04 00 00 00 01 02
+_addr 60 00 06 63
+_data 01 2a 32
 _endPreset 25
+
 _preset 26
-_addr 00 00 04 22
-_data 00
-_addr 60 00 00 30
-_data 01 0a 1d 3c 32 00 32 3c 00
-_addr 60 00 05 60
-_data 01 00 04 02 20 0c 29 64
-_addr 60 00 06 10
-_data 01 03 1d 00 0a 02 0a 0a 43 64 05
-_addr 60 00 01 40
-_data 00 13
-_addr 60 00 03 3a
-_data 2b 2e 03 4b 21 30 03 41 50 00 03 10 14 0e 32 64
-_addr 60 00 01 40
-_data 00 13
-_addr 60 00 02 7e
-_data 1f 28 52 32 00 00 3c 00
-_addr 60 00 01 40
-_data 00 13
-_addr 60 00 02 75
-_data 00 0a 28 37 00 00 64 00
-_addr 60 00 03 4c
-_data 00 0e
-_addr 60 00 05 13
-_data 46 55 41 32
-_addr 60 00 03 4c
-_data 00 0e
-_addr 60 00 03 58
-_data 01 01 32 23 23 00 32 00 01 23 32 32 3c 00 32 00 00 64 00
-_addr 60 00 03 4c
-_data 00 0e
-_addr 60 00 04 3d
-_data 00 00 64
-_addr 60 00 12 00
-_data 01 0a 0b 0e 1d 14 13 00 07 08 15 00 0e 04 05 03 00 02 00 02 02
-_addr 60 00 06 63
-_data 01 16 32
 _addr 00 00 04 20
-_data 03 00 00 50 27 08 00 16 0d 28
-_addr ff
-_data 32
-_addr 00 00 04 22
-_data 1e
+_data 02 11 34 46 29 25 00 41 3b 1d
+_addr 60 00 00 30
+_data 00 0a 46 3c 32 00 32 28 00
+_addr 60 00 05 60
+_data 00 07 01 66 16 08 64 64
+_addr 60 00 06 10
+_data 01 04 1b 00 08 0e 0c 05 34 64 05
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 02 75
+_data 00 18 28 37 00 00 64 00
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 01 63
+_data 00 27 48 32 23
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 02 7e
+_data 18 28 52 32 00 00 3c 00
+_addr 60 00 03 4c
+_data 01 1d
+_addr 60 00 05 20
+_data 0c 22 64
+_addr 60 00 03 4c
+_data 01 1d
+_addr 60 00 05 0a
+_data 14 1f 50 15 00 04 3c 00
+_addr 60 00 03 4c
+_data 01 1d
+_addr 60 00 05 46
+_data 1b 27 1d 4b 11 33 2e 35 3d 00 03 10 14 0e 32 64
+_addr 60 00 12 00
+_data 01 0a 0b 0e 03 14 13 07 07 08 14 1d 17 04 05 04 00 00 00 01 02
+_addr 60 00 06 63
+_data 01 2a 32
 _endPreset 26
+
 _preset 27
-_addr 00 00 04 22
-_data 00
+_addr 00 00 04 20
+_data 01 25 64 46 31 39 00 46 37 2e
 _addr 60 00 00 30
 _data 00 0a 46 3c 32 00 32 28 00
 _addr 60 00 05 60
 _data 00 00 04 02 16 0c 62 64
 _addr 60 00 06 10
-_data 01 04 1b 00 08 0e 0c 06 3f 64 05
+_data 01 04 1b 00 08 0e 0c 05 3f 64 05
+_addr 60 00 01 40
+_data 01 03
+_addr 60 00 02 7e
+_data 18 28 52 32 00 00 3c 00
 _addr 60 00 01 40
 _data 01 03
 _addr 60 00 02 75
@@ -147,10 +736,10 @@ _addr 60 00 01 40
 _data 01 03
 _addr 60 00 01 63
 _data 00 2f 32 32 25
-_addr 60 00 01 40
-_data 01 03
-_addr 60 00 02 7e
-_data 18 28 52 32 00 00 3c 00
+_addr 60 00 03 4c
+_data 01 07
+_addr 60 00 03 58
+_data 01 01 32 23 23 00 32 00 01 23 32 32 3c 00 32 00 00 64 00
 _addr 60 00 03 4c
 _data 01 07
 _addr 60 00 04 3d
@@ -159,24 +748,15 @@ _addr 60 00 03 4c
 _data 01 07
 _addr 60 00 04 08
 _data 08 14 0d 01 14 17 01 14 14 0e 14
-_addr 60 00 03 4c
-_data 01 07
-_addr 60 00 03 58
-_data 01 01 32 23 23 00 32 00 01 23 32 32 3c 00 32 00 00 64 00
 _addr 60 00 12 00
 _data 01 0a 0b 0e 03 14 13 00 07 08 07 00 0e 04 05 04 00 00 00 00 02
 _addr 60 00 06 63
 _data 01 16 32
-_addr 00 00 04 20
-_data 01 25 00 46 31 39 00 46 37 2e
-_addr ff
-_data 32
-_addr 00 00 04 22
-_data 64
 _endPreset 27
+
 _preset 28
-_addr 00 00 04 22
-_data 00
+_addr 00 00 04 20
+_data 01 25 64 46 31 39 00 46 3f 37
 _addr 60 00 00 30
 _data 00 0a 46 3c 32 00 32 28 00
 _addr 60 00 05 60
@@ -211,75 +791,43 @@ _addr 60 00 12 00
 _data 01 0a 0b 0e 03 14 13 00 07 08 07 14 0e 04 05 04 00 00 02 01 02
 _addr 60 00 06 63
 _data 01 16 32
-_addr 00 00 04 20
-_data 01 25 00 46 31 39 00 46 3f 37
-_addr ff
-_data 32
-_addr 00 00 04 22
-_data 64
 _endPreset 28
+
 _preset 29
-# Mute amplfier
-_addr 00 00 04 22
-_data 00
-# Category: boost, Type: WarmOD
+_addr 00 00 04 20
+_data 02 42 24 4e 42 2a 00 00 37 38
 _addr 60 00 00 30
 _data 00 05 00 3c 28 00 32 43 00
-# Category: delay, Type: Digital
 _addr 60 00 05 60
 _data 00 00 04 02 16 0c 62 64
-# Category: reverb, Type: Plate
 _addr 60 00 06 10
 _data 01 04 19 00 08 0e 0c 05 46 64 05
-# Category: mod, Type: Flanger
 _addr 60 00 01 40
 _data 00 03
-# Category: mod, Type: Flanger
 _addr 60 00 02 7e
 _data 25 28 52 32 00 00 3c 00
-# Category: mod, Type: Phaser
 _addr 60 00 01 40
 _data 00 03
-# Category: mod, Type: Phaser
 _addr 60 00 02 75
 _data 00 25 28 37 00 00 64 00
-# Category: mod, Type: Comp
 _addr 60 00 01 40
 _data 00 03
-# Category: mod, Type: Comp
 _addr 60 00 01 63
 _data 00 14 32 32 1e
-# Category: fx, Type: T-Wah
 _addr 60 00 03 4c
 _data 01 07
-# Category: fx, Type: T-Wah
 _addr 60 00 03 58
 _data 01 01 32 23 23 00 32 00 01 23 32 32 3c 00 32 00 00 64 00
-# Category: fx, Type: Octave
 _addr 60 00 03 4c
 _data 01 07
-# Category: fx, Type: Octave
 _addr 60 00 04 3d
 _data 00 0c 64
-# Category: fx, Type: ParametricEQ
 _addr 60 00 03 4c
 _data 01 07
-# Category: fx, Type: ParametricEQ
 _addr 60 00 04 08
 _data 08 14 0d 01 14 17 01 14 14 0e 14
-# Color Assign
 _addr 60 00 12 00
 _data 01 0a 05 0e 03 14 13 00 07 08 07 00 0e 04 05 04 01 00 00 00 02
-# Noise Gate
 _addr 60 00 06 63
 _data 01 16 32
-# Amp Panel
-_addr 00 00 04 20
-_data 02 42 00 4e 42 2a 00 00 37 38
-# Delay
-_addr ff
-_data 32
-# Restore amp volume
-_addr 00 00 04 22
-_data 24
 _endPreset 29

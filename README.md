@@ -32,11 +32,15 @@ BBG for live performance use)
 
 Special thanks to:
 
-  + Robert Fransson (aka Codesmart) of Primova Sound for feedback,
+  + Robert Fransson (Codesmart) of Primova Sound for feedback,
   encouragement and general programming wizardry.
 
   + All the regulars on VGuitar Forum for providing positive energy,
-  enthusiasm and concrete suggestions.
+  enthusiasm and concrete suggestions. In particular I salute Colin
+  Willcocks (Gumtown) and Robin Van Boven (Beanow) for their
+  invaluable contributions to Katana reverse-engineering.  And, as
+  always, Steve Conrad (Elantric) for providing the most valuable
+  forum on Earth for musical propellor-heads.
 
 ## For the non-techies
 
@@ -53,46 +57,25 @@ or glossed over something critical.
 
 New:
 
-  + Preset capture / restore now preserves all DSP effect deep
-    settings in addition to front panel knobs and color buttons. My
-    initial scheme (so-called "palettes") was not terribly
-    practical and the new behavior is more what a user would expect.
+  + Preset capture/restore now preserves all relevant settings in the
+    "patch data" area. This is a superset of what's available on the
+    front panel, so knobs and color buttons are no longer directly
+    captured.
 
-  + Preset capture / restore no longer pays attention to built-in
-    presets (aka "Tone Settings"). It simply takes a complete snapshot
-    of the active amplifier state at save and replaces the current
-    state with that saved snapshot at restore.  Restore does **not**
-    overwrite the current "Tone Setting", although you can choose to
-    do that manually if you wish.
+    Rationale:
 
-The extended preset feature allows you to save and recall the **entire**
-amplifier state:
+    Katana has numerous capabilities beyond what's exposed in the Boss
+    Tone Studio or reachable from panel knobs. It's incredibly
+    difficult to get sensible interaction between physical controls
+    and a recalled patch, so for now I'm not even going to try.
 
-  + All 15 assigned DSP effects
-  + Effects chain
-  + Noise-gate setting
-  + All front panel controls other than Master, Power Control and Tone
-  Setting. (Includes selected ranges and colors in the Effects section)
+  + The bridge now interrupts audio output in a distinctive pattern to
+  acknowledge patch capture.  The previous approach of cycling the amp
+  model LEDs was slow and resulted in undesirable side-effects.  This
+  is discussed in more detail below.
 
-For example, if you have a chorus voice active on green color in the
-FX slot and a pitch-shifter tuned in on yellow the bridge will capture
-both of them (along with whatever was on red!) so you can toggle the
-effect type on your recalled setting and get exactly what you expect.
-Similarly, the bridge stores whatever is setup on the inactive range
-of the Boost/Mod and Delay/Fx knobs. So, to continue the previous
-example, if you had a particular delay type mapped to red you will get
-that back after recall when you move the Delay/Fx knob to the first
-half of its range.
-
-At this point I am not capturing the effects loop settings, although
-this is under consideration for a future release.  If it's important
-to you, please weigh in by opening an issue.
-
-You may instruct the bridge software to store the amplifier state in
-MIDI PC# 11-127 as you choose (discussed below).  The data is stored
-in a small disk file on the computer, not the amplifier itself. This
-file is plain text and you can edit it yourself if you know what
-you're doing. 
+The bridge software stores patches outside the amplifier and can
+recall them upon receipt of a MIDI PC command.
 
 Mapping of CC values is very limited at this point.  Robert Fransson
 (Codesmart) and I have worked out a full specification that maps CC#
@@ -104,16 +87,15 @@ At this point, the only CC# mapping is:
 
 CC# 70 (0-127) --> Amplifier Volume (0-100)
 
-Volume preset handling needs some explanation. I find it annoying when
-preset recall maps expression pedal toe-down to full volume,
-regardless of where you might have had the volume when shaping your
-tone.  The logic in this program ensures that toe-down on recall gives
-you exactly the volume position that existed at save. I realize this
-may not be everyone's preference and will keep an open mind to
-suggestions or criticism.
+Previous versions of this application tied the MIDI volume controller
+to the amplifier volume and used a complex approach to ensure pedal
+toe-down never exceeded the setting at capture time.  CC# 70 in this
+release is tied to the internal volume pedal controller where it
+inherently behaves in the desired manner (this is what a volume pedal
+connected to the GA-FC footswitch acts upon).
 
-NOTE: This range limiting does **not** apply to the built in "Tone
-Settings", but only to presets managed by the bridge program.
+The vendor defined MIDI API is supported and will operate without any
+change in behavior.  
 
 # High-Level Overview of Installation
 
@@ -160,38 +142,61 @@ strings to help the program find the MIDI interface.
 
 Run the ```install.sh``` script as root
 
+## Communication Test
+
+First, ensure that your controller is on and connected to the Katana
+bridge computer. Then, connect the amp to that computer. If you have
+configured everything correctly, the bridge will start automatically.
+
+Wait about ten seconds for the software to initialize.
+
+Check basic operation by sending PC# 1-5 while watching the "Tone
+Settings" LEDs, which should change accordingly.  If you have a volume
+control or pedal mapped to CC# 70, check to see if it is able to vary
+the amplifier volume.  If the amp does not react, see section on
+troubleshooting below.
+
+When either the amp or controller is disconnected (or shut off), the
+bridge will automatically be stopped.
+
 ## Use
 
-If you have configured everything correctly, the bridge will start
-automatically when both the controller and the Katana amp are
-connected via USB.  If either are disconnected (or shut off), the
-bridge is stopped.
+To capture and store a user preset, start by dialing in a sound to
+your liking.  This might involve connecting the amp to Boss Tone
+Studio or Gumtown's Katana FxFloorboard application (required if you
+want access to hidden settings). Once you have your tone setup,
+disconnect the amp from the computer and plug it into the device where
+you've installed Katana bridge. Wait about ten seconds for the program
+to start.
 
-The vendor defined MIDI API is supported and will operate without any
-change in behavior.  
+Next, "arm" the bridge for settings capture by sending three messages
+in this format:
 
-To capture and store a user preset, dial in a sound to your liking and
-"arm" the bridge for settings capture by sending three messages in
-this format:
+CC#: 3 - Value: 127
 
-CC 3 - Value 127
+within a two second period.  Then strike and hold a chord and select a
+program number in the range 11..127 where you would like to store your
+settings. The bridge will read and save the patch data and pulse the
+volume several times to acknowledge. This information is permanently
+saved and can be recalled instantly by re-selecting the PC#.
 
-within a two second period. Finally, select a program number in the
-range 11..127 where you would like this stored. The bridge will save
-the front-panel state and cycle the LEDs around the 'Amp Type' control
-as an acknowledgment.  This information is permanently saved and can
-be recalled instantly by re-selecting the PC#.
-
-If you arm the bridge and change your mind, send any other CC message
-to cancel.
+If you change your mind after arming the bridge send any other CC
+message to cancel.
 
 I have the last preset on my Behringer FCB-1010 controller setup to
 issue the CC3 command on a momentary basis.  When I want to capture a
-setting, I tap this three times quickly than page through the banks
+setting, I tap this three times quickly then page through the banks
 and press the preset where I wish to save.  This technique should be
 possible with other floor controllers. 
 
 ## In case of difficulty
+
+Check the system logs (/var/log/syslog and /var/log/messages) to see
+if the amp and controller were detected.  The bridge code will not
+start until they're both seen.
+
+Check the mail spool file for 'root' to see if any exceptions or error
+messages are present.
 
 RPi and BBG are a bit fussy about enumeration of new USB devices. If
 you are not getting proper communication, try replugging both the amp
@@ -200,3 +205,7 @@ and MIDI controller **after** those devices are powered up.
 I've had success using a passive USB hub with the single USB on the
 BBG, but YMMV since most USB<->5Pin MIDI converters draw some degree
 of bus power.  A powered hub might be necessary in some situations.
+
+If all else fails, open an issue here and I'll try to help.  Please
+describe as much as you can about your environment and what you have
+tried.
