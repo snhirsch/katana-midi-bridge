@@ -9,9 +9,7 @@ import math
 
 from panel_preset import PanelPreset
 from katana import Katana
-from color_buttons import ColorButtons
-from simple_dsp import SimpleDSP
-from complex_dsp import ComplexDSP
+from range import Range
 
 mido.set_backend('mido.backends.rtmidi')
 
@@ -90,11 +88,11 @@ def save_presets():
 # Capture and persist a new preset (overwrites existing)
 def capture_preset( katana, program ):
     # Read amp into rec using controller PC program value as id
-    rec = PanelPreset.read_from_amp( katana, program, colorObj, simpleObj, complexObj )
+    rec = PanelPreset.read_from_amp( katana, program, rangeObj )
     presets[ rec.id ] = rec
     # Persist to disk
     save_presets()
-    # Cycle LEDs for confirmation signal
+    # Pulse volume for acknowledgement
     katana.signal()
     return rec
 
@@ -120,10 +118,7 @@ def handle_cc( trigger, katana, control, value ):
         trigger.clear()
         # All our CC --> sysex mappings here
         if control == 70:
-            if active_preset != None:
-                scaled = active_preset.scale_volume_to_amp( log_scale(value) )
-            else:
-                scaled = PanelPreset.scale_volume_to_amp_default( log_scale(value) )
+            scaled = log_scale(value)
             katana.volume( scaled )
 
 
@@ -145,9 +140,7 @@ if scriptdir == None:
 
 datadir = scriptdir + '/parameters/'
 
-colorObj = ColorButtons( datadir + 'color_assign.json' )
-simpleObj = SimpleDSP( datadir + 'simple_dsp.json' )
-complexObj = ComplexDSP( datadir + 'complex_dsp.json' )
+rangeObj = Range( datadir + 'ranges.json' )
 
 # Controller interface
 interface = args[1]

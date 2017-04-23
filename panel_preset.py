@@ -32,7 +32,7 @@ class PanelPreset:
     @staticmethod
     def get_from_file( infh ):
         lineNum = 0
-        obj = PanelPreset(None, None, None)
+        obj = PanelPreset()
         for line in infh:
             lineNum += 1
             line = line.strip()
@@ -58,7 +58,6 @@ class PanelPreset:
                 handler( value, lineNum )
 
             if obj.state == obj.Done:
-                obj.volume_midi_scale = obj.get_data(AMP_VOLUME_ADDR, 0, 1)[0] / 128
                 yield obj
                 obj = PanelPreset(None, None, None)
                 
@@ -69,72 +68,23 @@ class PanelPreset:
     # current amplifier state
     #
     @staticmethod
-    def read_from_amp( katana, preset_id, colorObj, simpleObj, complexObj ):
-        obj = PanelPreset( colorObj, simpleObj, complexObj )
+    def read_from_amp( katana, preset_id, rangeObj ):
+        obj = PanelPreset()
         obj.state = obj.Done
         obj.id = preset_id
 
-        # Store zero-volume command
-        parm = ParmRec( AMP_VOLUME_ADDR, (0,), "Mute amplifier" )
-        obj.parms.append( parm )
-        
-        # NOTE: This code can hang or blow up with invalid list index if
-        #       remnants from an earlier reply are sitting in the input
-        #       buffer.
-
-        # Read active DSP deep parms
-        for rec in colorObj.read_color_assign( katana ):
-            # Get the appropriate group handler
-            handler = obj.dsp[ rec['group'] ]
-            # Lookup parm blocks
-            coords = handler.get_coords( rec['category'], rec['type'] )
-            # And read from amp
-            for block in coords['blocks']:
-                addr, length = block
-                addr, data = katana.query_sysex_data( addr, length )
-                parm = ParmRec( addr[0], data[0], "Category: %s, Type: %s" % (rec['category'], coords['name']) )
+        for rec in rangeObj.get_coords():
+            first = rec['baseAddr']
+            last = rec['lastAddr']
+            name = rec['name']
+            addr, data = katana.query_sysex_range( first, last )
+            for a, d in zip( addr, data ):
+                parm = ParmRec( a, d, name )
                 obj.parms.append( parm )
-                
-        # Read chain, color assign and color button state
-        addr, data = katana.query_sysex_data( COLOR_ASSIGN_ADDR, COLOR_ASSIGN_LEN )
-        parm = ParmRec( addr[0], data[0], "Color assign" )
-        obj.parms.append( parm )
-        
-        # Read noise gate state
-        addr, data = katana.query_sysex_data( NS_ADDR, NS_LEN )
-        parm = ParmRec( addr[0], data[0], "Noise Gate" )
-        obj.parms.append( parm )
-        
-        # Read amplifier panel block
-        addr, data = katana.query_sysex_data( PANEL_STATE_ADDR, PANEL_STATE_LEN )
-        
-        # Create a list so we can modify
-        data_list_0 = list( data[0] )
-        # Grab stored volume setting 
-        volume = data_list_0[2]
-        # Patch in a zero to keep it muted
-        data_list_0[2] = 0
-
-        # Store patched block
-        parm = ParmRec( addr[0], data_list_0, "Amp Panel" )
-        obj.parms.append( parm )
-        
-        # Store a delay record to prevent "pop" at patch change.
-        # Data is a single byte specifying delay in ms.
-        parm = ParmRec( (0xff,), (50,), "Delay" )
-        obj.parms.append( parm )
-        
-        # Restore actual volume
-        parm = ParmRec( AMP_VOLUME_ADDR, (volume,), "Restore amp volume" )
-        obj.parms.append( parm )
-        
-        # Keep this around so we can properly scale controller
-        # pedal input
-        obj.volume_midi_scale = volume / 128
         
         return obj
 
-    def __init__( self, colorObj, simpleObj, complexObj ):
+    def __init__( self ):
         self.state = self.Start
         self.id = -1
 
@@ -142,11 +92,6 @@ class PanelPreset:
         self.curr_rec = None
         self.parms = []
         
-        self.colorObj = colorObj
-        self.dsp = {}
-        self.dsp['simple'] = simpleObj
-        self.dsp['complex'] = complexObj
-
     # State machine handlers for parsing data file:
         
     def _preset( self, value, lineNum ):
@@ -231,22 +176,6 @@ class PanelPreset:
             i += 1
             
         outfh.write( "_endPreset %d\n" % self.id )
-
-    # Controller input 0..127.  Scale this so it maxes out at the captured
-    # volume. 
-    def scale_volume_to_amp( self, controller_value ):
-        if controller_value > 0:
-            controller_value += 1
-        return int( controller_value * self.volume_midi_scale )
-
-    # Full range scaling when using built-in preset.
-    # FIXME: No reason why we cannot read actual volume from
-    # built-in.
-    @staticmethod
-    def scale_volume_to_amp_default( controller_value ):
-        if controller_value > 0:
-            controller_value += 1
-        return int( controller_value * (100/128) ) 
 
     # Return array of bytes from current preset data. Call with
     # base address, offset and count.
