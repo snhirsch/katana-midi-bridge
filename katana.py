@@ -42,7 +42,7 @@ class Katana:
     # five seconds
     def _clear_input( self ):
         # Force off edit mode
-        self.send_sysex_data( EDIT_OFF )
+        # self.send_sysex_data( EDIT_OFF )
         start = time.time()
         while True:
             msg = self.inport.poll()

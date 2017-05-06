@@ -48,7 +48,7 @@ def capture_preset( katana, program, presets ):
 
 args = sys.argv
 if len(args) < 5:
-    print( "Usage: bridge.py <amplifier_port> <amp_channel> <old_preset_file> <new_preset_file>\n" )
+    print( "Usage: katana_convert <amplifier_port> <amp_channel> <old_preset_file> <new_preset_file>\n" )
     print( "       Ex:\n" )
     print( "          bridge.py \"KATANA:KATANA MIDI 1 20:0\" 1 old_presets.txt new_presets.txt\n" )
     sys.exit( 1 )

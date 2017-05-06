@@ -97,6 +97,35 @@ connected to the GA-FC footswitch acts upon).
 The vendor defined MIDI API is supported and will operate without any
 change in behavior.  
 
+### IMPORTANT: Backwards Compatibility
+
+If you wish to keep patches produced by earlier versions of this
+program they must be converted to the new format using the
+'katana_convert' program.  It may be run on a desktop PC or the
+embedded computer you're using for performance (Beaglebone or RPi).
+
+Install the new software first, then:
+
+  1. If running on your performance rig, disconnect the MIDI
+  controller to ensure the bridge is not running.
+
+  2. Connect the amplifier
+
+  3. Determine the amplifier MIDI interface using the same method as
+  during initial installation.  See Wiki for details.
+
+  4. Run the conversion (your parms may vary):
+
+  katana_convert "KATANA:KATANA MIDI 1 20:0" 1 <old_file> <new_file>
+
+  Where 'old_file' is the path of the existing patch file (usually
+  /home/katana-user/preset.data) and 'new_file' is where you want to
+  save the converted output.  Do not use the same name for both!
+
+  5. After the conversion runs, save a copy of the old file for
+  safety, rename the new file to 'preset.data' and copy it into the
+  /home/katana-user directory.
+
 # High-Level Overview of Installation
 
 (See Wiki for step-by-step instructions)
@@ -164,21 +193,35 @@ bridge will automatically be stopped.
 To capture and store a user preset, start by dialing in a sound to
 your liking.  This might involve connecting the amp to Boss Tone
 Studio or Gumtown's Katana FxFloorboard application (required if you
-want access to hidden settings). Once you have your tone setup,
-disconnect the amp from the computer and plug it into the device where
+want access to hidden settings). After you setup a tone to your
+liking the next step depends on which application was used:
+
+If you were connected to FxFloorboard (recommended), check the
+rectangular "Connect" button at the top of the window.  If it is
+illuminated in green, toggle the connection state off by clicking on
+the button.
+
+If you used BTS, exit that program by closing the window.
+
+**IMPORTANT**: Physically disconnecting without taking one of these
+steps leaves the amplifier in "edit" mode. If reconnected to USB while
+in that mode it discards your carefully crafted patch and restores the
+current preset or panel state. In other words, you lose all your work.
+
+Disconnect the amp from the computer and plug it into the device where
 you've installed Katana bridge. Wait about ten seconds for the program
 to start.
 
-Next, "arm" the bridge for settings capture by sending three messages
-in this format:
+Arm the bridge for settings capture by sending three messages in this
+format:
 
 CC#: 3 - Value: 127
 
 within a two second period.  Then strike and hold a chord and select a
 program number in the range 11..127 where you would like to store your
 settings. The bridge will read and save the patch data and pulse the
-volume several times to acknowledge. This information is permanently
-saved and can be recalled instantly by re-selecting the PC#.
+volume to acknowledge. This information is permanently saved and can
+be recalled instantly by re-selecting the PC#.
 
 If you change your mind after arming the bridge send any other CC
 message to cancel.
