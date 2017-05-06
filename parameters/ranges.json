@@ -1,0 +1,27 @@
+[
+    {
+        "name": "range1",
+        "baseAddr": [96, 0, 0, 48],
+        "lastAddr": [96, 0, 0, 111]
+    },
+    {
+        "name": "range2",
+        "baseAddr": [96, 0, 1, 64],
+        "lastAddr": [96, 0, 6, 51]
+    },
+    {
+        "name": "range3",
+        "baseAddr": [96, 0, 6, 85],
+        "lastAddr": [96, 0, 6, 102]
+    },
+    {
+        "name": "range4",
+        "baseAddr": [96, 0, 7, 24],
+        "lastAddr": [96, 0, 7, 51]
+    },
+    {
+        "name": "range5",
+        "baseAddr": [96, 0, 16, 16],
+        "lastAddr": [96, 0, 16, 35]
+    }
+]
