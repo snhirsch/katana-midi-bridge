@@ -31,6 +31,8 @@ class PanelPreset:
     #
     @staticmethod
     def get_from_file( infh ):
+        rx = re.compile( '#\s*' )
+
         lineNum = 0
         obj = PanelPreset()
         for line in infh:
@@ -38,9 +40,10 @@ class PanelPreset:
             line = line.strip()
             if len( line ) == 0: continue
             if re.match( r'^#', line ):
-                # If we're in a preset stanza gather comments
+                # If we're in a preset stanza gather comments, removing any
+                # '#' char prefix.
                 if obj.curr_rec != None:
-                    obj.curr_rec.memo += line
+                    obj.curr_rec.memo += rx.sub( '', line )
                 continue
 
             try:

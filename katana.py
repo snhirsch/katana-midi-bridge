@@ -213,13 +213,19 @@ class Katana:
 
     # Cycle volume pedal gain to provide audible signal
     def signal( self ):
+        # Get current volume pedal position
         current_volume = self.query_sysex_byte( VOLUME_PEDAL_ADDR )
 
-        for i in range(4):
-            self.send_sysex_data( VOLUME_PEDAL_ADDR, (0,)  )
-            sleep( 0.1 )
-            self.send_sysex_data( VOLUME_PEDAL_ADDR, (50,) )
+        # Mute volume briefly
+        self.send_sysex_data( VOLUME_PEDAL_ADDR, (0,)  )
+        sleep( 0.3 )
+        
+        # Then cycle to 50% in case volume pedal was off when
+        # save initiated.
+        self.send_sysex_data( VOLUME_PEDAL_ADDR, (50,) )
+        sleep( 0.3 )
 
+        # Finally, restore current pedal position
         self.send_sysex_data( VOLUME_PEDAL_ADDR, (current_volume,) )
 
 

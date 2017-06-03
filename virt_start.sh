@@ -10,5 +10,5 @@
 ./katana_bridge_app \
     VIRT_PORT 2 \
     "KATANA:KATANA MIDI 1 20:0" 1 \
-    test.file \
+    preset.data \
     virt
